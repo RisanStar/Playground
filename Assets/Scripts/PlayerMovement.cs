@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -47,7 +48,8 @@ public class PlayerMovement : MonoBehaviour
     {
         UpdateAnimation();
 
-        if (rb.velocity.y > 0f && !isGrounded())
+
+        if (rb.velocity.y > 0f && IsGrounded())
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
         }
@@ -56,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = true;
         }
-        else
+        else if (rb.velocity.x > 0f)
         {
             spriteRenderer.flipX = false;
         }
@@ -65,43 +67,51 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         playerJump.performed += Jump;
+      
+
         moveDir = playerMovement.ReadValue<Vector2>();
 
-        moveDir.y = 0f;
         rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
 
     }
 
     private void Jump(InputAction.CallbackContext jump)
     {
-        if (jump.performed && isGrounded())
+        if (jump.performed && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }  
     } 
 
-    private bool isGrounded()
+    private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, .2f, ground);
+        return Physics2D.OverlapCircle(groundCheck.position, .1f, ground);
     }
 
     private void UpdateAnimation()
     {
         AnimState state;
+        if (IsGrounded())
+        {
+            anim.SetBool("Grounded", true);
+        }
         if (rb.velocity.x > 0f || rb.velocity.x < 0f)
         {
             state = AnimState.running;
-            anim.SetBool("Grounded", true);
         }
         else
         {
             state = AnimState.idle;
         }
+
         if (playerJump.WasPerformedThisFrame())
         {
             anim.SetTrigger("Jump");
+            anim.SetBool("Grounded", false);
         }
 
+
+        
         anim.SetInteger("AnimState", (int)state);
     }
 }
