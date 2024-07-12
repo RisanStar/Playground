@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -35,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float attackMoment;
     [SerializeField] private float canAttackCount;
     private float canAttackTimer;
+    [SerializeField] private BoxCollider2D attackRange;
+    [SerializeField] private Attack attackScript;
     
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
@@ -124,15 +127,22 @@ public class PlayerMovement : MonoBehaviour
     {
         if (IsGrounded())
         {
-            rb.velocity = new Vector2(moveDir.x * runSpeed, rb.velocity.y);
+            moveDir = new Vector2(rb.velocity.x * runSpeed, rb.velocity.y);
         }
     }
 
     private void Attack(InputAction.CallbackContext attack)
     {
-        if (attack.performed && IsGrounded())
+        if (attack.performed)
         {
-            rb.velocity = new Vector2(moveDir.x + attackMoment, rb.velocity.y);
+            if (attackScript.inRange)
+            {
+                Mathf.Clamp(.2f, transform.position.x, attackScript.attackDistance);
+            }
+            else
+            {
+              
+            }
         }
     }
 
