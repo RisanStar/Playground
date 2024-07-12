@@ -6,6 +6,20 @@ public class Attack : MonoBehaviour
 {
     public bool inRange { get; private set; }
     public float attackDistance { get; private set; }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy"))
+        {
+            inRange = true;
+            attackDistance = Vector2.Distance(transform.position, collision.transform.position);
+            Debug.Log("Is in range and is within: " + attackDistance);
+        }
+        else
+        {
+            inRange = false;
+        }
+    }
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Enemy"))
@@ -13,6 +27,10 @@ public class Attack : MonoBehaviour
             inRange = true;
             attackDistance = Vector2.Distance(transform.position, collision.transform.position);
             Debug.Log("Is in range and is within: " + attackDistance);
+        }
+        else
+        {
+            inRange = false;
         }
     }
 }

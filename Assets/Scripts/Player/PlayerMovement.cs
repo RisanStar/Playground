@@ -33,12 +33,17 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Attacking")]
     private bool canAttack;
-    [SerializeField] private float attackMoment;
+    private Vector2 attackMoment;
     [SerializeField] private float canAttackCount;
     private float canAttackTimer;
     [SerializeField] private BoxCollider2D attackRange;
     [SerializeField] private Attack attackScript;
-    
+    [SerializeField] private GameObject enemy;
+    private bool knockBack;
+    [SerializeField] private float knockbackPower;
+    [SerializeField] private float knockbackCount;
+    private float knockbackTimer;
+
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
     {
@@ -71,21 +76,26 @@ public class PlayerMovement : MonoBehaviour
     {
         canLandTimer = canLandCount;
         canAttackTimer = canAttackCount;
+        knockbackTimer = knockbackCount;
+
         canAttack = true;
+        knockBack = false;
     }
 
     private void Update()
     {
+        attackMoment.x = transform.position.x - enemy.transform.position.x;
+
         if (rb.velocity.y > 0f && !IsGrounded())
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
         }
 
-        if (rb.velocity.x < 0f)
+        if (moveDir.x < 0f)
         {
             spriteRenderer.flipX = true;
         }
-        else if (rb.velocity.x > 0f)
+        else if (moveDir.x > 0f)
         {
             spriteRenderer.flipX = false;
         }
@@ -95,13 +105,27 @@ public class PlayerMovement : MonoBehaviour
             canAttackTimer = canAttackCount;
         }
 
+        if (knockBack)
+        {
+            knockbackTimer -= 1 * Time.deltaTime;
+            if (knockbackTimer <= 0) { knockbackTimer = 0; }
+            if (knockbackTimer == 0)
+            {
+                knockBack = false;
+                knockbackTimer = knockbackCount;
+            }
+        }
+
     }
 
     private void FixedUpdate()
     {
         //WALKING
         moveDir = playerMovement.ReadValue<Vector2>();
-        rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
+        if (!knockBack)
+        {
+            rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
+        }
 
         //EXTRA 
         playerJump.performed += Jump;
@@ -137,11 +161,13 @@ public class PlayerMovement : MonoBehaviour
         {
             if (attackScript.inRange)
             {
-                Mathf.Clamp(.2f, transform.position.x, attackScript.attackDistance);
+                knockBack = true;
+                attackMoment = attackMoment.normalized * knockbackPower;
+                rb.AddForce(attackMoment, ForceMode2D.Impulse);
             }
             else
             {
-              
+                return;
             }
         }
     }

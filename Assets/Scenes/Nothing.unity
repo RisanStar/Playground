@@ -852,10 +852,12 @@ MonoBehaviour:
   jumpMulti: 1.2
   gravity: 1.4
   canLandCount: 0.3
-  attackMoment: 1.1
-  canAttackCount: 0.2
+  canAttackCount: 0.15
   attackRange: {fileID: 1310568762}
   attackScript: {fileID: 1310568763}
+  enemy: {fileID: 1609639157}
+  knockbackPower: 5
+  knockbackCount: 0.2
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -900,7 +902,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0
+  m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -1150,7 +1152,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1.1, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &1310568763
 MonoBehaviour:
@@ -1545,7 +1547,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1556,7 +1558,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.2, y: 1.2}
   m_EdgeRadius: 0
 --- !u!50 &1609639159
 Rigidbody2D:
@@ -1583,7 +1585,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!212 &1609639160
 SpriteRenderer:
