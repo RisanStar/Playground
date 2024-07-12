@@ -820,6 +820,23 @@ MonoBehaviour:
       m_Action: Player Run
       m_Flags: 0
     m_Flags: 0
+  playerAttack:
+    m_Name: Player Attack
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 2abc90f9-2ca3-404b-b95c-95691c6fe127
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 709710c1-ebcf-470a-a761-b45af312a7db
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Player Attack
+      m_Flags: 0
+    m_Flags: 0
   sprite: {fileID: 360653375}
   spriteRenderer: {fileID: 360653378}
   rb: {fileID: 728634014}
@@ -834,6 +851,8 @@ MonoBehaviour:
   jumpMulti: 1.2
   gravity: 1.4
   canLandCount: 0.3
+  attackMoment: 1.1
+  canAttackCount: 0.2
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0

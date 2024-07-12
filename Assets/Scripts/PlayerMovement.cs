@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private InputAction playerMovement;
     [SerializeField] private InputAction playerJump;
     [SerializeField] private InputAction playerRun;
+    [SerializeField] private InputAction playerAttack;
 
     [SerializeField] private GameObject sprite;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -28,6 +29,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity;
     [SerializeField] private float canLandCount;
     private float canLandTimer;
+
+    [Header("Attacking")]
+    private bool canAttack;
+    [SerializeField] private float attackMoment;
+    [SerializeField] private float canAttackCount;
+    private float canAttackTimer;
+    
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
     {
@@ -43,6 +51,9 @@ public class PlayerMovement : MonoBehaviour
 
         playerRun = playerCntrls.Player.Run;
         playerRun.Enable();
+
+        playerAttack = playerCntrls.Player.Attack;
+        playerAttack.Enable();
     }
 
     private void OnDisable()
@@ -50,11 +61,14 @@ public class PlayerMovement : MonoBehaviour
         playerMovement.Disable();
         playerJump.Disable();
         playerRun.Disable();
+        playerAttack.Disable();
     }
 
     private void Start()
     {
         canLandTimer = canLandCount;
+        canAttackTimer = canAttackCount;
+        canAttack = true;
     }
 
     private void Update()
@@ -72,6 +86,12 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = false;
         }
+
+        if (canAttack)
+        {
+            canAttackTimer = canAttackCount;
+        }
+
     }
 
     private void FixedUpdate()
@@ -83,11 +103,13 @@ public class PlayerMovement : MonoBehaviour
         //EXTRA 
         playerJump.performed += Jump;
         playerRun.performed += Run;
+        playerAttack.performed += Attack;
     }
 
     private void LateUpdate()
     {
-        UpdateAnimation();
+        UpdateMovementAnimation();
+        UpdateAttackAnimation();
     }
 
     private void Jump(InputAction.CallbackContext jump)
@@ -100,9 +122,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Run(InputAction.CallbackContext run)
     {
-        if (run.performed && IsGrounded())
+        if (IsGrounded())
         {
-            rb.velocity = new Vector2(rb.velocity.x * runSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(moveDir.x * runSpeed, rb.velocity.y);
+        }
+    }
+
+    private void Attack(InputAction.CallbackContext attack)
+    {
+        if (attack.performed && IsGrounded())
+        {
+            rb.velocity = new Vector2(moveDir.x + attackMoment, rb.velocity.y);
         }
     }
 
@@ -111,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         return Physics2D.OverlapCircle(groundCheck.position, .05f, ground);
     }
 
-    private void UpdateAnimation()
+    private void UpdateMovementAnimation()
     {
         AnimState state;
         if (IsGrounded())
@@ -141,5 +171,31 @@ public class PlayerMovement : MonoBehaviour
         }
 
         anim.SetInteger("AnimState", (int)state);
+    }
+
+    private void UpdateAttackAnimation()
+    {
+        if (playerAttack.WasPressedThisFrame())
+        {
+            if (canAttack)
+            {
+                anim.SetTrigger("Attack1");
+                canAttack = false;
+            }
+            else
+            {
+                canAttack = true;
+            }
+
+            if (!canAttack)
+            {
+                canAttackTimer -= 1 * Time.deltaTime;
+                if (canAttackTimer <= 0) { canAttackTimer = 0; }
+                if (canAttackTimer == 0)
+                {
+                    canAttack = true;
+                }
+            }
+        }
     }
 }
