@@ -10,15 +10,9 @@ public class Attack : MonoBehaviour
 
     public LayerMask ignoreCol;
 
-
-    private void Start()
-    {
-       heightCorrect = new Vector2(transform.position.x, transform.position.y - 1.5f);
-    }
-
     private void Update()
     {
-        Debug.DrawRay(heightCorrect, Vector2.right * 10, Color.green);
+        Debug.DrawRay(transform.position, Vector2.right * 10, Color.green);
         if (attackDistance >= 1.2f)
         {
             inRange = false;
@@ -31,8 +25,8 @@ public class Attack : MonoBehaviour
 
     private void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(heightCorrect, Vector2.right, 5, ~ignoreCol);
-        if (hit.collider != null)
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
+        if (hit.collider.CompareTag("Enemy"))
         {
             hit.transform.SendMessage("HitByRay");
             attackDistance = hit.point.x - transform.position.x;

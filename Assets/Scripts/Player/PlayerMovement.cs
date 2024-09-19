@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
 
+    public Vector2 playerPos {  get; private set; }
+
     [Header("Walking & Running")]
     private Vector2 moveDir;
     [SerializeField] private float speed;
@@ -33,15 +35,15 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Attacking")]
     private bool canAttack;
-    private Vector2 attackMoment;
+    private Vector2 attackDistance; 
     [SerializeField] private float canAttackCount;
     private float canAttackTimer;
     [SerializeField] private Attack attackScript;
     [SerializeField] private GameObject enemy;
     public bool pKnockBack { get; private set; } 
-    [SerializeField] private float knockbackPower;
-    [SerializeField] private float knockbackCount;
-    private float knockbackTimer;
+    [SerializeField] private float pKnockBackPower;
+    [SerializeField] private float pKnockBackCount;
+    private float pKnockBackTimer;
 
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
@@ -75,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
     {
         canLandTimer = canLandCount;
         canAttackTimer = canAttackCount;
-        knockbackTimer = knockbackCount;
+        pKnockBackTimer = pKnockBackCount;
 
         canAttack = true;
         pKnockBack = false;
@@ -83,7 +85,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        attackMoment.x = transform.position.x - enemy.transform.position.x;
+        playerPos = transform.position;
+        attackDistance.x = transform.position.x - enemy.transform.position.x;
 
         if (rb.velocity.y > 0f && !IsGrounded())
         {
@@ -106,12 +109,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (pKnockBack)
         {
-            knockbackTimer -= 1 * Time.deltaTime;
-            if (knockbackTimer <= 0) { knockbackTimer = 0; }
-            if (knockbackTimer == 0)
+            pKnockBackTimer -= 1 * Time.deltaTime;
+            if (pKnockBackTimer <= 0) { pKnockBackTimer = 0; }
+            if (pKnockBackTimer == 0)
             {
                 pKnockBack = false;
-                knockbackTimer = knockbackCount;
+                pKnockBackTimer = pKnockBackCount;
             }
         }
 
@@ -161,8 +164,8 @@ public class PlayerMovement : MonoBehaviour
             if (attackScript.inRange)
             {
                 pKnockBack = true;
-                attackMoment = attackMoment.normalized * knockbackPower;
-                rb.AddForce(attackMoment, ForceMode2D.Impulse);
+                attackDistance = attackDistance.normalized * pKnockBackPower;
+                rb.AddForce(attackDistance, ForceMode2D.Impulse);
             }
             else
             {

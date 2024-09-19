@@ -5,40 +5,51 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private GameObject pGo;
 
-    private Vector2 attackMoment;
+    [Header("Walking & Running")]
+    private Vector2 moveDir;
+    [SerializeField] private float speed;
+
+    [Header("Taking Damage")]
+    private Vector2 pAttackDistance;
     [SerializeField] private PlayerMovement playerScript;
     [SerializeField] private Attack attackScript;
-    private Rigidbody2D playerRb;
     private Vector2 playerDis;
     private bool eKnockBack; 
     [SerializeField] private float eKnockBackPower;
     private Vector2 eKnockBackDir;
 
-    private Vector2 heightCorrect;
     public LayerMask ignoreCol;
 
     private void Start()
     {
         eKnockBack = false;
-        heightCorrect = new Vector2(transform.position.x, transform.position.y);
     }
     private void Update()
     {
-        Debug.DrawRay(heightCorrect, Vector2.left * 10, Color.red);
+        Debug.DrawRay(transform.position, Vector2.left * 10, Color.red);
+        if (Vector2.Distance(transform.position, playerScript.playerPos) > 0f)
+        {
+            transform.position += transform.position * (Time.deltaTime * speed);
+        }
     }
 
     private void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(heightCorrect, Vector2.left, 5, ~ignoreCol);
-        if (hit.collider != null)
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
+        if (hit.collider.CompareTag("Player") == true)
         {
-            playerRb = hit.collider.attachedRigidbody;
-            playerDis = transform.position - playerRb.transform.position;
+            Debug.Log("Hitting player");
+
+        }
+        else
+        {
+            return;
         }
        
     }
-    private void HitByRay()
+    void HitByRay()
     {
         if (playerScript.pKnockBack)
         {
@@ -51,7 +62,8 @@ public class EnemyMovement : MonoBehaviour
 
         if (eKnockBack)
         {
-            rb.AddForce(playerDis.normalized * -500f);
+            pAttackDistance = playerDis.normalized  * eKnockBackPower;
+            rb.AddForce(pAttackDistance.normalized, ForceMode2D.Impulse);
         }
     }
 }
