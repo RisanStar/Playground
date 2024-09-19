@@ -36,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 attackMoment;
     [SerializeField] private float canAttackCount;
     private float canAttackTimer;
-    [SerializeField] private BoxCollider2D attackRange;
     [SerializeField] private Attack attackScript;
     [SerializeField] private GameObject enemy;
     private bool knockBack;

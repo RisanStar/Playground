@@ -165,7 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 57412569}
   - component: {fileID: 57412571}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlayerPhys
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ CapsuleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 4
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -853,8 +853,7 @@ MonoBehaviour:
   gravity: 1.4
   canLandCount: 0.3
   canAttackCount: 0.15
-  attackRange: {fileID: 1310568762}
-  attackScript: {fileID: 1310568763}
+  attackScript: {fileID: 728634016}
   enemy: {fileID: 1609639157}
   knockbackPower: 5
   knockbackCount: 0.2
@@ -940,6 +939,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ece9b3aa740ee4c8a4ce7b0fb712d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreCol:
+    serializedVersion: 2
+    m_Bits: 4
 --- !u!1 &843524852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178,6 +1180,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ece9b3aa740ee4c8a4ce7b0fb712d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreCol:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1333764490
 GameObject:
   m_ObjectHideFlags: 0
