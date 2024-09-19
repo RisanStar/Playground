@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     private float canAttackTimer;
     [SerializeField] private Attack attackScript;
     [SerializeField] private GameObject enemy;
-    private bool knockBack;
+    public bool pKnockBack { get; private set; } 
     [SerializeField] private float knockbackPower;
     [SerializeField] private float knockbackCount;
     private float knockbackTimer;
@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         knockbackTimer = knockbackCount;
 
         canAttack = true;
-        knockBack = false;
+        pKnockBack = false;
     }
 
     private void Update()
@@ -104,13 +104,13 @@ public class PlayerMovement : MonoBehaviour
             canAttackTimer = canAttackCount;
         }
 
-        if (knockBack)
+        if (pKnockBack)
         {
             knockbackTimer -= 1 * Time.deltaTime;
             if (knockbackTimer <= 0) { knockbackTimer = 0; }
             if (knockbackTimer == 0)
             {
-                knockBack = false;
+                pKnockBack = false;
                 knockbackTimer = knockbackCount;
             }
         }
@@ -121,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //WALKING
         moveDir = playerMovement.ReadValue<Vector2>();
-        if (!knockBack)
+        if (!pKnockBack)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
         }
@@ -160,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (attackScript.inRange)
             {
-                knockBack = true;
+                pKnockBack = true;
                 attackMoment = attackMoment.normalized * knockbackPower;
                 rb.AddForce(attackMoment, ForceMode2D.Impulse);
             }
