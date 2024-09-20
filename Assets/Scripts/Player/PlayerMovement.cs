@@ -88,11 +88,13 @@ public class PlayerMovement : MonoBehaviour
         playerPos = transform.position;
         attackDistance.x = transform.position.x - enemy.transform.position.x;
 
+        //JUMPING
         if (rb.velocity.y > 0f && !IsGrounded())
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
         }
 
+        //MOVING
         if (moveDir.x < 0f)
         {
             spriteRenderer.flipX = true;
@@ -102,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.flipX = false;
         }
 
+        //ATTACKING
         if (canAttack)
         {
             canAttackTimer = canAttackCount;
@@ -137,6 +140,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void LateUpdate()
     {
+        //ANIMATION
         UpdateMovementAnimation();
         UpdateAttackAnimation();
     }

@@ -12,7 +12,9 @@ public class Attack : MonoBehaviour
 
     private void Update()
     {
-        Debug.DrawRay(transform.position, Vector2.right * 10, Color.green);
+        Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
+
+        //RANGE
         if (attackDistance >= 1.2f)
         {
             inRange = false;
