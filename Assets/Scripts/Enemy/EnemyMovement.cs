@@ -11,9 +11,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float speed;
 
     [Header("Taking Damage")]
-    private Vector2 pAttackDistance;
-    [SerializeField] private PlayerMovement playerScript;
-    [SerializeField] private Attack attackScript;
+    [SerializeField] private AttackScript attackScript;
     private bool eKnockBack;
     [SerializeField] private float eKnockBackPower;
 
@@ -34,7 +32,7 @@ public class EnemyMovement : MonoBehaviour
         }
 
         //E-KNOCKBACK
-        if (playerScript.pKnockBack)
+        if (attackScript.pKnockBack)
         {
             eKnockBack = true;
         }
@@ -50,19 +48,17 @@ public class EnemyMovement : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
         if (hit.collider.CompareTag("Player") == true)
         {
-
            Debug.Log("Hitting player");
-
         }
         else
         {
+           Debug.Log("Player not found!");
            return;
         }
 
         if (eKnockBack)
         {
-           pAttackDistance = pAttackDistance.normalized * eKnockBackPower;
-           rb.AddForce(pAttackDistance.normalized, ForceMode2D.Impulse);
+           rb.AddForce(Vector2.right * eKnockBackPower, ForceMode2D.Impulse);
         }
 
    }

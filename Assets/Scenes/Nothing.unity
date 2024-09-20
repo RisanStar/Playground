@@ -821,27 +821,11 @@ MonoBehaviour:
       m_Action: Player Run
       m_Flags: 0
     m_Flags: 0
-  playerAttack:
-    m_Name: Player Attack
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 2abc90f9-2ca3-404b-b95c-95691c6fe127
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 709710c1-ebcf-470a-a761-b45af312a7db
-      m_Path: <Mouse>/leftButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Player Attack
-      m_Flags: 0
-    m_Flags: 0
   sprite: {fileID: 360653375}
   spriteRenderer: {fileID: 360653378}
   rb: {fileID: 728634014}
   anim: {fileID: 360653377}
+  attackScript: {fileID: 728634016}
   speed: 5
   runSpeed: 7
   ground:
@@ -852,11 +836,6 @@ MonoBehaviour:
   jumpMulti: 1.2
   gravity: 1.4
   canLandCount: 0.3
-  canAttackCount: 0.15
-  attackScript: {fileID: 728634016}
-  enemy: {fileID: 1609639157}
-  pKnockBackPower: 0
-  pKnockBackCount: 0
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -939,9 +918,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ece9b3aa740ee4c8a4ce7b0fb712d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAttack:
+    m_Name: Player Attack
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 1368eb0e-b9ea-4cf5-ad6d-ccab978260e5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 6f483e67-77b8-48e8-9455-9f11c415ce2f
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Player Attack
+      m_Flags: 0
+    m_Flags: 0
+  sprite: {fileID: 360653375}
+  spriteRenderer: {fileID: 360653378}
+  rb: {fileID: 728634014}
+  anim: {fileID: 360653377}
+  playerMove: {fileID: 728634012}
   ignoreCol:
     serializedVersion: 2
     m_Bits: 4
+  canAttackCount: 0.2
+  enemy: {fileID: 1609639157}
+  pKnockBackPower: 0.4
+  pKnockBackCount: 0.2
 --- !u!1 &843524852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1180,9 +1185,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ece9b3aa740ee4c8a4ce7b0fb712d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAttack:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 1e5ea80e-6bb0-4113-bf38-ccaad23aead8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  sprite: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  rb: {fileID: 0}
+  anim: {fileID: 0}
+  playerMove: {fileID: 0}
   ignoreCol:
     serializedVersion: 2
     m_Bits: 0
+  canAttackCount: 0
+  enemy: {fileID: 0}
+  pKnockBackPower: 0
+  pKnockBackCount: 0
 --- !u!1 &1333764490
 GameObject:
   m_ObjectHideFlags: 0
@@ -1642,9 +1665,8 @@ MonoBehaviour:
   rb: {fileID: 1609639159}
   pGo: {fileID: 728634010}
   speed: 1
-  playerScript: {fileID: 728634012}
   attackScript: {fileID: 728634016}
-  eKnockBackPower: 1
+  eKnockBackPower: 0.4
   ignoreCol:
     serializedVersion: 2
     m_Bits: 8
