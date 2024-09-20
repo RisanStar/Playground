@@ -20,6 +20,7 @@ public class Attack : MonoBehaviour
         else
         {
             inRange = true;
+            Debug.Log(inRange);
         }
     }
 
@@ -28,9 +29,8 @@ public class Attack : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
         if (hit.collider.CompareTag("Enemy"))
         {
-            hit.transform.SendMessage("HitByRay");
             attackDistance = hit.point.x - transform.position.x;
-            Debug.Log(attackDistance);
+            //Debug.Log(attackDistance);
         }
     }
 }

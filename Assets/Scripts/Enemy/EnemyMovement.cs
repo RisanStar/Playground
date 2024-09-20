@@ -8,17 +8,14 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private GameObject pGo;
 
     [Header("Walking & Running")]
-    private Vector2 moveDir;
     [SerializeField] private float speed;
 
     [Header("Taking Damage")]
     private Vector2 pAttackDistance;
     [SerializeField] private PlayerMovement playerScript;
     [SerializeField] private Attack attackScript;
-    private Vector2 playerDis;
     private bool eKnockBack; 
     [SerializeField] private float eKnockBackPower;
-    private Vector2 eKnockBackDir;
 
     public LayerMask ignoreCol;
 
@@ -29,9 +26,9 @@ public class EnemyMovement : MonoBehaviour
     private void Update()
     {
         Debug.DrawRay(transform.position, Vector2.left * 10, Color.red);
-        if (Vector2.Distance(transform.position, playerScript.playerPos) > 0f)
+        if (Vector2.Distance(transform.position, pGo.transform.position) > 0f)
         {
-            transform.position += transform.position * (Time.deltaTime * speed);
+            transform.position = Vector2.MoveTowards(transform.position, pGo.transform.position, speed * Time.deltaTime);
         }
     }
 
@@ -47,9 +44,9 @@ public class EnemyMovement : MonoBehaviour
         {
             return;
         }
-       
+        HitByRay();
     }
-    void HitByRay()
+    private void HitByRay()
     {
         if (playerScript.pKnockBack)
         {
@@ -62,7 +59,7 @@ public class EnemyMovement : MonoBehaviour
 
         if (eKnockBack)
         {
-            pAttackDistance = playerDis.normalized  * eKnockBackPower;
+            pAttackDistance = pAttackDistance.normalized  * eKnockBackPower;
             rb.AddForce(pAttackDistance.normalized, ForceMode2D.Impulse);
         }
     }
