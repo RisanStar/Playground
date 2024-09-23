@@ -10,15 +10,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private InputAction playerMovement;
     [SerializeField] private InputAction playerJump;
     [SerializeField] private InputAction playerRun;
-    [SerializeField] private InputAction playerAttack;
 
     [SerializeField] private GameObject sprite;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
 
+    [SerializeField] private AttackScript attackScript;
+
+    public Vector2 moveDir { get; private set; }
+
     [Header("Walking & Running")]
-    private Vector2 moveDir;
     [SerializeField] private float speed;
     [SerializeField] private float runSpeed;
 
@@ -30,18 +32,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity;
     [SerializeField] private float canLandCount;
     private float canLandTimer;
-
-    [Header("Attacking")]
-    private bool canAttack;
-    private Vector2 attackMoment;
-    [SerializeField] private float canAttackCount;
-    private float canAttackTimer;
-    [SerializeField] private Attack attackScript;
-    [SerializeField] private GameObject enemy;
-    public bool pKnockBack { get; private set; } 
-    [SerializeField] private float knockbackPower;
-    [SerializeField] private float knockbackCount;
-    private float knockbackTimer;
+    [SerializeField] private float coyoteJump;
+    [SerializeField] private float jumpBuffTime;
+    [SerializeField] private bool jumped;
 
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
@@ -59,8 +52,6 @@ public class PlayerMovement : MonoBehaviour
         playerRun = playerCntrls.Player.Run;
         playerRun.Enable();
 
-        playerAttack = playerCntrls.Player.Attack;
-        playerAttack.Enable();
     }
 
     private void OnDisable()
@@ -68,28 +59,56 @@ public class PlayerMovement : MonoBehaviour
         playerMovement.Disable();
         playerJump.Disable();
         playerRun.Disable();
-        playerAttack.Disable();
     }
 
     private void Start()
     {
         canLandTimer = canLandCount;
+<<<<<<< HEAD
+
         canAttackTimer = canAttackCount;
         knockbackTimer = knockbackCount;
 
         canAttack = true;
         pKnockBack = false;
+=======
+>>>>>>> 282a9153908e275803e650fa0c8c690447515b0f
     }
 
     private void Update()
     {
+<<<<<<< HEAD
         attackMoment.x = transform.position.x - enemy.transform.position.x;
 
+        if (!IsGrounded())
+=======
+        //JUMPING
         if (rb.velocity.y > 0f && !IsGrounded())
+>>>>>>> 282a9153908e275803e650fa0c8c690447515b0f
         {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
+            coyoteJump -= Time.deltaTime;
+            if (rb.velocity.y > 0f)
+            {
+                jumped = true;
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
+            }
+        }
+        else
+        {
+            coyoteJump = .2f;
+            jumped = false;
         }
 
+        if (Keyboard.current.spaceKey.IsActuated(.4f))
+        {
+            jumpBuffTime = .2f;
+        }
+        else
+        {
+            jumpBuffTime -= Time.deltaTime;
+        }
+
+        //MOVING
         if (moveDir.x < 0f)
         {
             spriteRenderer.flipX = true;
@@ -99,51 +118,35 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.flipX = false;
         }
 
-        if (canAttack)
-        {
-            canAttackTimer = canAttackCount;
-        }
-
-        if (pKnockBack)
-        {
-            knockbackTimer -= 1 * Time.deltaTime;
-            if (knockbackTimer <= 0) { knockbackTimer = 0; }
-            if (knockbackTimer == 0)
-            {
-                pKnockBack = false;
-                knockbackTimer = knockbackCount;
-            }
-        }
-
     }
 
     private void FixedUpdate()
     {
         //WALKING
         moveDir = playerMovement.ReadValue<Vector2>();
-        if (!pKnockBack)
+        if (!attackScript.pKnockBack)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
         }
 
-        //EXTRA 
         playerJump.performed += Jump;
         playerRun.performed += Run;
-        playerAttack.performed += Attack;
     }
 
     private void LateUpdate()
     {
+        //ANIMATION
         UpdateMovementAnimation();
-        UpdateAttackAnimation();
     }
 
     private void Jump(InputAction.CallbackContext jump)
     {
-        if (jump.performed && IsGrounded())
+        if (coyoteJump > 0 && jumpBuffTime > 0 && jumped != true)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        }  
+            coyoteJump = 0;
+            jumpBuffTime = 0f;
+        }
     } 
 
     private void Run(InputAction.CallbackContext run)
@@ -151,23 +154,6 @@ public class PlayerMovement : MonoBehaviour
         if (IsGrounded())
         {
             moveDir = new Vector2(rb.velocity.x * runSpeed, rb.velocity.y);
-        }
-    }
-
-    private void Attack(InputAction.CallbackContext attack)
-    {
-        if (attack.performed)
-        {
-            if (attackScript.inRange)
-            {
-                pKnockBack = true;
-                attackMoment = attackMoment.normalized * knockbackPower;
-                rb.AddForce(attackMoment, ForceMode2D.Impulse);
-            }
-            else
-            {
-                return;
-            }
         }
     }
 
@@ -206,31 +192,5 @@ public class PlayerMovement : MonoBehaviour
         }
 
         anim.SetInteger("AnimState", (int)state);
-    }
-
-    private void UpdateAttackAnimation()
-    {
-        if (playerAttack.WasPressedThisFrame())
-        {
-            if (canAttack)
-            {
-                anim.SetTrigger("Attack1");
-                canAttack = false;
-            }
-            else
-            {
-                canAttack = true;
-            }
-
-            if (!canAttack)
-            {
-                canAttackTimer -= 1 * Time.deltaTime;
-                if (canAttackTimer <= 0) { canAttackTimer = 0; }
-                if (canAttackTimer == 0)
-                {
-                    canAttack = true;
-                }
-            }
-        }
     }
 }

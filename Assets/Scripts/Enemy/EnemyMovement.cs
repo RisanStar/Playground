@@ -5,42 +5,34 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private GameObject pGo;
 
-    private Vector2 attackMoment;
-    [SerializeField] private PlayerMovement playerScript;
-    [SerializeField] private Attack attackScript;
-    private Rigidbody2D playerRb;
-    private Vector2 playerDis;
-    private bool eKnockBack; 
+    [Header("Walking & Running")]
+    [SerializeField] private float speed;
+
+    [Header("Taking Damage")]
+    [SerializeField] private AttackScript attackScript;
+    private bool eKnockBack;
     [SerializeField] private float eKnockBackPower;
-    private Vector2 eKnockBackDir;
 
-    private Vector2 heightCorrect;
     public LayerMask ignoreCol;
 
     private void Start()
     {
         eKnockBack = false;
-        heightCorrect = new Vector2(transform.position.x, transform.position.y);
     }
     private void Update()
     {
-        Debug.DrawRay(heightCorrect, Vector2.left * 10, Color.red);
-    }
+        Debug.DrawRay(transform.position, Vector2.left * 10, Color.red);
 
-    private void FixedUpdate()
-    {
-        RaycastHit2D hit = Physics2D.Raycast(heightCorrect, Vector2.left, 5, ~ignoreCol);
-        if (hit.collider != null)
+        //PLAYER-FOLLOW
+        if (Vector2.Distance(transform.position, pGo.transform.position) > 0f)
         {
-            playerRb = hit.collider.attachedRigidbody;
-            playerDis = transform.position - playerRb.transform.position;
+            transform.position = Vector2.MoveTowards(transform.position, pGo.transform.position, speed * Time.deltaTime);
         }
-       
-    }
-    private void HitByRay()
-    {
-        if (playerScript.pKnockBack)
+
+        //E-KNOCKBACK
+        if (attackScript.pKnockBack)
         {
             eKnockBack = true;
         }
@@ -48,10 +40,26 @@ public class EnemyMovement : MonoBehaviour
         {
             eKnockBack = false;
         }
+        
+    } 
+   private void FixedUpdate()
+   {
+        //E-RAYCAST
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
+        if (hit.collider.CompareTag("Player") == true)
+        {
+           Debug.Log("Hitting player");
+        }
+        else
+        {
+           Debug.Log("Player not found!");
+           return;
+        }
 
         if (eKnockBack)
         {
-            rb.AddForce(playerDis.normalized * -500f);
+           rb.AddForce(Vector2.right * eKnockBackPower, ForceMode2D.Impulse);
         }
-    }
+
+   }
 }
