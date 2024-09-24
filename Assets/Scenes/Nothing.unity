@@ -836,6 +836,8 @@ MonoBehaviour:
   jumpMulti: 1.2
   gravity: 1.4
   canLandCount: 0.3
+  coyoteJump: 0.2
+  jumpBuffTime: 0.2
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0

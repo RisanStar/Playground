@@ -32,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity;
     [SerializeField] private float canLandCount;
     private float canLandTimer;
+    [SerializeField] private float coyoteJump;
+    [SerializeField] private float jumpBuffTime;
 
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
@@ -65,14 +67,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        //JUMPING
-        if (rb.velocity.y > 0f && !IsGrounded())
+        if (playerJump.IsInProgress())
         {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
+            jumpBuffTime = .2f;
+        }
+        else
+        {
+            jumpBuffTime -= Time.deltaTime;
         }
 
-        //MOVING
-        if (moveDir.x < 0f)
+            //MOVING
+            if (moveDir.x < 0f)
         {
             spriteRenderer.flipX = true;
         }
@@ -86,14 +91,35 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         //WALKING
+        playerRun.performed += Run;
         moveDir = playerMovement.ReadValue<Vector2>();
         if (!attackScript.pKnockBack)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
         }
 
-        playerJump.performed += Jump;
-        playerRun.performed += Run;
+        //JUMPING
+        if (jumpBuffTime > 0 && coyoteJump > 0)
+        {
+            playerJump.performed += Jump;
+            jumpBuffTime = 0f;
+        }
+
+        if (!IsGrounded())
+        {
+            coyoteJump -= Time.deltaTime;
+            //IF JUMPED
+            if (rb.velocity.y > 0f)
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
+                coyoteJump = 0f;
+            }
+        }
+        else
+        {
+            coyoteJump = .2f;
+            jumpBuffTime = .2f;
+        }
     }
 
     private void LateUpdate()
@@ -104,10 +130,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext jump)
     {
-        if (jump.performed && IsGrounded())
+        if (jump.performed && coyoteJump > 0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        }  
+        }
     } 
 
     private void Run(InputAction.CallbackContext run)
