@@ -796,46 +796,24 @@ MonoBehaviour:
       m_Action: Player Jump
       m_Flags: 0
     m_Flags: 0
-  playerRun:
-    m_Name: Player Run
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: b28280a3-bd03-4737-8672-5c821439c6e6
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: d8ec8ed2-497a-4476-be31-2b4588d1c4c8
-      m_Path: <Keyboard>/leftShift
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Player Run
-      m_Flags: 0
-    - m_Name: 
-      m_Id: 5caf5ee8-cf66-4288-9453-31255f83fa28
-      m_Path: <Keyboard>/rightShift
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Player Run
-      m_Flags: 0
-    m_Flags: 0
   sprite: {fileID: 360653375}
   spriteRenderer: {fileID: 360653378}
   rb: {fileID: 728634014}
   anim: {fileID: 360653377}
   attackScript: {fileID: 728634016}
-  speed: 5
-  runSpeed: 7
+  speed: 4
+  runSpeed: 6
   ground:
     serializedVersion: 2
     m_Bits: 64
   groundCheck: {fileID: 843524853}
   jumpForce: 5
+  timeHeld: 0
   jumpMulti: 1.2
   gravity: 1.4
   canLandCount: 0.3
+  coyoteTime: 0.2
+  jumpBuffTime: 0.4
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0

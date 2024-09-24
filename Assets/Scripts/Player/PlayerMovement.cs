@@ -9,7 +9,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerControls playerCntrls;
     [SerializeField] private InputAction playerMovement;
     [SerializeField] private InputAction playerJump;
-    [SerializeField] private InputAction playerRun;
 
     [SerializeField] private GameObject sprite;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -28,10 +27,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask ground;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float jumpForce;
+    [SerializeField] private float timeHeld;
     [SerializeField] private float jumpMulti;
     [SerializeField] private float gravity;
     [SerializeField] private float canLandCount;
     private float canLandTimer;
+    [SerializeField] private float coyoteTime;
+    [SerializeField] private float jumpBuffTime;
 
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
@@ -45,17 +47,12 @@ public class PlayerMovement : MonoBehaviour
 
         playerJump = playerCntrls.Player.Jump;
         playerJump.Enable();
-
-        playerRun = playerCntrls.Player.Run;
-        playerRun.Enable();
-
     }
 
     private void OnDisable()
     {
         playerMovement.Disable();
         playerJump.Disable();
-        playerRun.Disable();
     }
 
     private void Start()
@@ -65,13 +62,23 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        //JUMPING
-        if (rb.velocity.y > 0f && !IsGrounded())
+        //JUMP BUFFER
+        if (Keyboard.current.spaceKey.IsActuated(.4f))
         {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
+            jumpBuffTime = .4f;
+            timeHeld += Time.deltaTime;
+        }
+        else
+        {
+            timeHeld = 0f;
+            jumpBuffTime -= Time.deltaTime;
+            if (jumpBuffTime < 0)
+            {
+                jumpBuffTime = 0;
+            }
         }
 
-        //MOVING
+        //SPRITE DIRECTION
         if (moveDir.x < 0f)
         {
             spriteRenderer.flipX = true;
@@ -85,37 +92,46 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //WALKING
+        //WALKING & RUNNING
         moveDir = playerMovement.ReadValue<Vector2>();
         if (!attackScript.pKnockBack)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
+            if (Keyboard.current.shiftKey.IsActuated(.4f))
+            {
+                rb.velocity = new Vector2(moveDir.x * runSpeed, rb.velocity.y);
+            }
         }
 
-        playerJump.performed += Jump;
-        playerRun.performed += Run;
+        //JUMPING
+        if (jumpBuffTime > 0f && coyoteTime > 0f)
+        {
+           rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+
+        //COYOTE & LANDING
+        if (!IsGrounded())
+        {
+            coyoteTime -= Time.deltaTime;
+            if (rb.velocity.y > 0f)
+            {
+                coyoteTime = 0f;
+                if(timeHeld > .1f)
+                {
+                    rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
+                }
+            }
+        }
+        else
+        {
+            coyoteTime = .2f;
+        }
     }
 
     private void LateUpdate()
     {
         //ANIMATION
         UpdateMovementAnimation();
-    }
-
-    private void Jump(InputAction.CallbackContext jump)
-    {
-        if (jump.performed && IsGrounded())
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        }  
-    } 
-
-    private void Run(InputAction.CallbackContext run)
-    {
-        if (IsGrounded())
-        {
-            moveDir = new Vector2(rb.velocity.x * runSpeed, rb.velocity.y);
-        }
     }
 
     private bool IsGrounded()
