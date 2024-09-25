@@ -66,11 +66,9 @@ public class PlayerMovement : MonoBehaviour
         if (Keyboard.current.spaceKey.IsActuated(.4f))
         {
             jumpBuffTime = .4f;
-            timeHeld += Time.deltaTime;
         }
         else
         {
-            timeHeld = 0f;
             jumpBuffTime -= Time.deltaTime;
             if (jumpBuffTime < 0)
             {
@@ -116,20 +114,15 @@ public class PlayerMovement : MonoBehaviour
             if (rb.velocity.y > 0f)
             {
                 coyoteTime = 0f;
-                if(timeHeld > .1f)
-                {
-                    rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
-                }
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
+                
             }
         }
         else
         {
             coyoteTime = .2f;
         }
-    }
 
-    private void LateUpdate()
-    {
         //ANIMATION
         UpdateMovementAnimation();
     }

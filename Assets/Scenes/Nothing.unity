@@ -883,7 +883,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b05c391dc3623a4991e9ba3c1b289c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 728634010}
+  cCollider: {fileID: 57412571}
+  anim: {fileID: 360653377}
+  hp: 0
+  hitCD: 1
 --- !u!114 &728634016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1164,7 +1167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerAttack:
-    m_Name: 
+    m_Name: Player Attack
     m_Type: 0
     m_ExpectedControlType: 
     m_Id: 1e5ea80e-6bb0-4113-bf38-ccaad23aead8
