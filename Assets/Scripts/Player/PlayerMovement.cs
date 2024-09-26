@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Animator anim;
 
     [SerializeField] private AttackScript attackScript;
+    [SerializeField] private PlayerDeath deathScript;
 
     public Vector2 moveDir { get; private set; }
 

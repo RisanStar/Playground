@@ -12,11 +12,20 @@ public class PlayerDeath : MonoBehaviour
     [SerializeField] private float hp;
     private bool beingHit;
     [SerializeField] private float hitCD;
+    private float hitCoolDown;
     private float hitCount;
+    private float deathCount; 
+    public bool isDead { get; private set; }
+
+    private void Awake()
+    {
+        isDead = false;
+        deathCount = 0;
+    }
 
     private void Start()
     {
-        hitCount = hitCD;
+        hitCoolDown = hitCD;
     }
 
     private void Update()
@@ -25,6 +34,7 @@ public class PlayerDeath : MonoBehaviour
         {
             SceneManager.LoadScene("nothing");
         }
+
     }
 
     private void FixedUpdate()
@@ -50,21 +60,38 @@ public class PlayerDeath : MonoBehaviour
         if (beingHit)
         {
             Debug.Log("colliding");
-            if (hitCount == hitCD)
+            if (hitCoolDown == hitCD)
             {
                 anim.SetTrigger("Hurt");
+                hitCount++;
             }
 
-            hitCount -= 1 * Time.deltaTime;
-            if (hitCount <= 0) { hitCount = 0; }
-            if (hitCount == 0)
+            hitCoolDown -= 1 * Time.deltaTime;
+            if (hitCoolDown <= 0) { hitCoolDown = 0; }
+            if (hitCoolDown == 0)
             {
-                hitCount = hitCD;
+                hitCoolDown = hitCD;
             }
+
+
+            if (hitCount >= 3) { hitCount = 3; }
+            if (hitCount == 3)
+            {
+                deathCount = 1;
+            }
+
+            if (deathCount == 1)
+            {
+                anim.SetBool("noBlood", false);
+                anim.SetTrigger("Death");
+
+                hitCD = 0;
+                isDead = true;
+;           }
         }
         else
         {
-            return;
+            isDead = false;
         }
     }
 
