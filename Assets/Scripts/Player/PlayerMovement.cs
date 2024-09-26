@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         //JUMP BUFFER
-        if (Keyboard.current.spaceKey.IsActuated(.4f))
+        if (Keyboard.current.spaceKey.IsActuated(.4f) && !deathScript.isDead)
         {
             jumpBuffTime = .4f;
         }
@@ -78,13 +78,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //SPRITE DIRECTION
-        if (moveDir.x < 0f)
+        if (!deathScript.isDead)
         {
-            spriteRenderer.flipX = true;
-        }
-        else if (moveDir.x > 0f)
-        {
-            spriteRenderer.flipX = false;
+            if (moveDir.x < 0f)
+            {
+                spriteRenderer.flipX = true;
+            }
+            else if (moveDir.x > 0f)
+            {
+                spriteRenderer.flipX = false;
+            }
         }
 
     }
@@ -93,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //WALKING & RUNNING
         moveDir = playerMovement.ReadValue<Vector2>();
-        if (!attackScript.pKnockBack)
+        if (!attackScript.pKnockBack && !deathScript.isDead)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
             if (Keyboard.current.shiftKey.IsActuated(.4f))
@@ -136,7 +139,7 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateMovementAnimation()
     {
         AnimState state;
-        if (IsGrounded())
+        if (IsGrounded() && !deathScript.isDead)
         {
             anim.SetBool("Grounded", true);
             anim.SetBool("canLand", false);
@@ -150,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
             state = AnimState.idle;
         }
 
-        if (rb.velocity.y > 0 && !IsGrounded())
+        if (rb.velocity.y > 0 && !IsGrounded() && !deathScript.isDead)
         {
             anim.SetTrigger("Jump");
             anim.SetBool("Grounded", false);

@@ -801,7 +801,7 @@ MonoBehaviour:
   rb: {fileID: 728634014}
   anim: {fileID: 360653377}
   attackScript: {fileID: 728634016}
-  deathScript: {fileID: 0}
+  deathScript: {fileID: 728634015}
   speed: 4
   runSpeed: 6
   ground:
@@ -886,8 +886,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cCollider: {fileID: 57412571}
   anim: {fileID: 360653377}
+  ignoreCol:
+    serializedVersion: 2
+    m_Bits: 4
   hp: 4
   hitCD: 1
+  dRTime: 1.5
 --- !u!114 &728634016
 MonoBehaviour:
   m_ObjectHideFlags: 0

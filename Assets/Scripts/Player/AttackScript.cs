@@ -15,7 +15,7 @@ public class AttackScript : MonoBehaviour
 
     [SerializeField] private PlayerMovement playerMove;
 
-    public LayerMask ignoreCol;
+    [SerializeField] private LayerMask ignoreCol;
 
     [Header("Attacking")]
     private bool canAttack;
