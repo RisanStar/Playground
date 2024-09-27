@@ -44,14 +44,15 @@ public class PlayerDeath : MonoBehaviour
         {
             StartCoroutine(DeathRestart());
         }
+
+        Debug.Log(hitCoolDown);
+        //Debug.DrawRay(transform.position, Vector2.right * .7f, Color.blue);
+
     }
 
     private void FixedUpdate()
     {
-        //ANIMATION
-        UpdateHealthAnimation();
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, .7f, ~ignoreCol);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 1f, ~ignoreCol);
         if (hit.collider.CompareTag("Enemy"))
         {
             beingHit = true;
@@ -60,19 +61,9 @@ public class PlayerDeath : MonoBehaviour
         {
             beingHit = false;
         }
-    }
-    private IEnumerator HitCheck()
-    {
-        if (beingHit)
-        {
-            yield return new WaitForSeconds(hitCD);
-            hitCount++;
-            anim.SetTrigger("Hurt");
-        }
-        else
-        {
-            StopCoroutine(HitCheck());
-        }
+
+        //ANIMATION
+        UpdateHealthAnimation();
     }
 
     private IEnumerator DeathRestart()
@@ -85,14 +76,26 @@ public class PlayerDeath : MonoBehaviour
     {
         if (!isDead)
         {
-   
-                StartCoroutine(HitCheck());
+            if (beingHit)
+            {
+                hitCoolDown -= 1 * Time.deltaTime;
+                if (hitCoolDown <= 0) { hitCoolDown = 0; }
+                if (hitCoolDown == 0)
+                {
+                    hitCoolDown = hitCD;
+                }
 
-                
                 if (hitCount >= 3) { hitCount = 3; }
                 if (hitCount == 3)
                 {
                     deathCount = 1;
+                }
+
+                if (hitCoolDown == hitCD)
+                {
+                    anim.SetTrigger("Hurt");
+                    hitCount++;
+
                 }
 
 
@@ -103,14 +106,16 @@ public class PlayerDeath : MonoBehaviour
 
                     hitCD = 0;
                     isDead = true;
-      
+
                 }
                 else
                 {
                     isDead = false;
+
                 }
             }
         }
     }
+}
 
 
