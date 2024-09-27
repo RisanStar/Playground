@@ -18,8 +18,8 @@ public class AttackScript : MonoBehaviour
     [SerializeField] private LayerMask ignoreCol;
 
     [Header("Attacking")]
-    private bool canAttack;
     private float attackRange;
+    public bool canAttack { get; private set; }
     [SerializeField] private float canAttackCount;
     private float canAttackTimer;
     private bool inRange;

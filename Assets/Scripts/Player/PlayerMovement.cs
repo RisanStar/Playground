@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerControls playerCntrls;
     [SerializeField] private InputAction playerMovement;
     [SerializeField] private InputAction playerJump;
+    [SerializeField] private InputAction playerRoll;
 
     [SerializeField] private GameObject sprite;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -36,7 +37,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float coyoteTime;
     [SerializeField] private float jumpBuffTime;
 
-    [Header("Roll")]
+    [Header("Rolling")]
+    [SerializeField] private float rollForce;
+    private bool canRoll;
     private float rollTime;
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
@@ -50,12 +53,16 @@ public class PlayerMovement : MonoBehaviour
 
         playerJump = playerCntrls.Player.Jump;
         playerJump.Enable();
+
+        playerRoll = playerCntrls.Player.Roll;
+        playerRoll.Enable();
     }
 
     private void OnDisable()
     {
         playerMovement.Disable();
         playerJump.Disable();
+        playerRoll.Disable();
     }
 
     private void Start()
@@ -79,17 +86,10 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if(Keyboard.current.dKey.isPressed || Keyboard.current.aKey.isPressed)
+        //ROLL TIME
+        if(playerRoll.WasPressedThisFrame())
         {
-            rollTime = .4f;
-        }
-        else
-        {
-            rollTime -= Time.deltaTime;
-            if (rollTime < 0)
-            {
-                rollTime = 0;
-            }
+            canRoll = true;
         }
 
         //SPRITE DIRECTION
@@ -111,14 +111,29 @@ public class PlayerMovement : MonoBehaviour
     {
         //WALKING & RUNNING
         moveDir = playerMovement.ReadValue<Vector2>();
-        if (!attackScript.pKnockBack && !deathScript.isDead)
+
+        if (!attackScript.pKnockBack && !deathScript.isDead && !canRoll)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
+
             if (Keyboard.current.shiftKey.IsActuated(.4f))
             {
                 rb.velocity = new Vector2(moveDir.x * runSpeed, rb.velocity.y);
             }
         }
+
+        //ROLLING
+        if (canRoll) 
+        {
+            if (moveDir.x < 0f)
+            {
+                rb.AddForce(Vector2.left * rollForce, ForceMode2D.Force);
+            }
+            else
+            {
+                rb.AddForce(Vector2.right * rollForce, ForceMode2D.Force);
+            }
+        } 
 
         //JUMPING
         if (jumpBuffTime > 0f && coyoteTime > 0f)
@@ -134,7 +149,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 coyoteTime = 0f;
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
-                
             }
         }
         else
@@ -154,11 +168,14 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateMovementAnimation()
     {
         AnimState state;
+        //LAND ANIM
         if (IsGrounded() && !deathScript.isDead)
         {
             anim.SetBool("Grounded", true);
             anim.SetBool("canLand", false);
         }
+
+        //RUN & IDLE ANIM
         if (rb.velocity.x > 0f || rb.velocity.x < 0f && IsGrounded())
         {
             state = AnimState.running;
@@ -168,6 +185,16 @@ public class PlayerMovement : MonoBehaviour
             state = AnimState.idle;
         }
 
+        //ROLL ANIM
+        if (!deathScript.isDead && !attackScript.canAttack)
+        {
+            if (canRoll)
+            {
+                anim.SetTrigger("Roll");
+            }
+        }
+
+        //JUMP ANIM
         if (rb.velocity.y > 0 && !IsGrounded() && !deathScript.isDead)
         {
             anim.SetTrigger("Jump");

@@ -796,6 +796,15 @@ MonoBehaviour:
       m_Action: Player Jump
       m_Flags: 0
     m_Flags: 0
+  playerRoll:
+    m_Name: Player Roll
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 406234fd-7bd8-4b00-85ce-5c0f0431474e
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   sprite: {fileID: 360653375}
   spriteRenderer: {fileID: 360653378}
   rb: {fileID: 728634014}
@@ -815,6 +824,7 @@ MonoBehaviour:
   canLandCount: 0.3
   coyoteTime: 0.2
   jumpBuffTime: 0.4
+  rollForce: 2
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0
