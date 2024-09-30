@@ -85,11 +85,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        //ROLL TIME
-        if (playerRoll.WasPressedThisFrame())
+        if (playerRoll.WasPerformedThisFrame())
         {
             canRoll = true;
-            Debug.Log(canRoll);
         }
         else
         {
@@ -109,6 +107,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        //ANIMATION
+        UpdateMovementAnimation();
     }
 
     private void FixedUpdate()
@@ -126,23 +126,15 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        //ROLLING
-        if (canRoll) 
-        {
-            if (moveDir.x < 0f)
-            {
-                rb.AddForce(Vector2.left * rollForce, ForceMode2D.Force);
-            }
-            else
-            {
-                rb.AddForce(Vector2.right * rollForce, ForceMode2D.Force);
-            }
-        } 
-
         //JUMPING
         if (jumpBuffTime > 0f && coyoteTime > 0f)
         {
            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+
+        if (canRoll)
+        {
+           rb.AddForce(Vector2.left * rollForce, ForceMode2D.Impulse);
         }
 
         //COYOTE & LANDING
@@ -159,9 +151,6 @@ public class PlayerMovement : MonoBehaviour
         {
             coyoteTime = .2f;
         }
-
-        //ANIMATION
-        UpdateMovementAnimation();
     }
 
     private bool IsGrounded()

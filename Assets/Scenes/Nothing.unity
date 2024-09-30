@@ -798,37 +798,21 @@ MonoBehaviour:
     m_Flags: 0
   playerRoll:
     m_Name: Player Roll
-    m_Type: 0
+    m_Type: 1
     m_ExpectedControlType: Button
     m_Id: 406234fd-7bd8-4b00-85ce-5c0f0431474e
     m_Processors: 
-    m_Interactions: MultiTap
+    m_Interactions: 
     m_SingletonActionBindings:
-    - m_Name: Roll
-      m_Id: 617fda5e-8e39-4394-9ce7-e9f40ea9eef1
-      m_Path: 1DAxis
+    - m_Name: 
+      m_Id: db8d1f02-23ba-4c2d-9ebd-e8345414ed75
+      m_Path: <Mouse>/rightButton
       m_Interactions: 
       m_Processors: 
       m_Groups: 
       m_Action: Player Roll
-      m_Flags: 4
-    - m_Name: negative
-      m_Id: e69e0dce-0f1a-4182-84bf-1caabcef04fc
-      m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Player Roll
-      m_Flags: 8
-    - m_Name: positive
-      m_Id: 603e85c7-1094-40c2-801d-ae04dcb0da3e
-      m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Player Roll
-      m_Flags: 8
-    m_Flags: 1
+      m_Flags: 0
+    m_Flags: 0
   sprite: {fileID: 360653375}
   spriteRenderer: {fileID: 360653378}
   rb: {fileID: 728634014}
@@ -891,7 +875,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 3
+  m_Mass: 1.2853982
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -902,7 +886,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
@@ -947,8 +931,8 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 6f483e67-77b8-48e8-9455-9f11c415ce2f
-      m_Path: <Mouse>/leftButton
+      m_Id: 3cb183ce-c4b7-4d4f-9bd7-f7d96dba9846
+      m_Path: <Keyboard>/e
       m_Interactions: 
       m_Processors: 
       m_Groups: 
