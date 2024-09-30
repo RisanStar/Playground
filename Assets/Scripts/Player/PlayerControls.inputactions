@@ -36,7 +36,7 @@
                     "name": "Roll",
                     "type": "Value",
                     "id": "57a01eae-ede3-45e9-9de6-9b9b76d9a272",
-                    "expectedControlType": "Digital",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true

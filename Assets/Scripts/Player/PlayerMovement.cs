@@ -40,7 +40,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Rolling")]
     [SerializeField] private float rollForce;
     private bool canRoll;
-    private float rollTime;
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
     {
@@ -87,9 +86,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //ROLL TIME
-        if(playerRoll.WasPressedThisFrame())
+        if (playerRoll.WasPressedThisFrame())
         {
             canRoll = true;
+            Debug.Log(canRoll);
+        }
+        else
+        {
+            canRoll = false;
         }
 
         //SPRITE DIRECTION
@@ -112,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
         //WALKING & RUNNING
         moveDir = playerMovement.ReadValue<Vector2>();
 
-        if (!attackScript.pKnockBack && !deathScript.isDead && !canRoll)
+        if (!attackScript.pKnockBack && !deathScript.isDead)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
 
@@ -186,13 +190,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //ROLL ANIM
-        if (!deathScript.isDead && !attackScript.canAttack)
+        if (canRoll)
         {
-            if (canRoll)
-            {
-                anim.SetTrigger("Roll");
-            }
+           anim.SetTrigger("Roll");
         }
+        
 
         //JUMP ANIM
         if (rb.velocity.y > 0 && !IsGrounded() && !deathScript.isDead)
