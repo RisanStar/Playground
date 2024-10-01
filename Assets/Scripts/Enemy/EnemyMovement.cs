@@ -41,19 +41,21 @@ public class EnemyMovement : MonoBehaviour
             eKnockBack = false;
         }
         
-    } 
-   private void FixedUpdate()
-   {
+    }
+    private void FixedUpdate()
+    {
         //E-RAYCAST
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
-        if (hit.collider.CompareTag("Player") == true)
+        if (hit)
         {
-           Debug.Log("Hitting player");
-        }
+            if (hit.collider.CompareTag("Player"))
+            {
+                Debug.Log("Hitting player");
+            }
+        } 
         else
         {
-           Debug.Log("Player not found!");
-           return;
+            return;
         }
 
         if (eKnockBack)

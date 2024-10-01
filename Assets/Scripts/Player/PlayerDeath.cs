@@ -10,6 +10,7 @@ public class PlayerDeath : MonoBehaviour
     [SerializeField] private Animator anim;
 
     [SerializeField] private LayerMask ignoreCol;
+    private Vector2 bluePos;
 
     [Header("Health")]
     [SerializeField] private float hp;
@@ -46,38 +47,40 @@ public class PlayerDeath : MonoBehaviour
             SceneManager.LoadScene("nothing");
         }
 
-
-        if (!isDead) 
+        if (beingHit)
         {
-            if (beingHit)
-            {
-                StartCoroutine(bh);
-            }
-            else
-            {
-                StopCoroutine(bh);
-            }
+            StartCoroutine(bh);
+        }
+        
+        if (!beingHit && !hasIFrames)
+        {
+            StopCoroutine(bh);
+        }
 
-            if (hitCount >= hp)
-            {
-                deathCount = 1;
-            }
+        if (hitCount >= hp)
+        {
+            deathCount = 1;
         }
 
         //ANIMATION
         UpdateHealthAnimation();
 
         Debug.Log(anim.GetCurrentAnimatorStateInfo(0).IsName("Hurt"));
-        Debug.DrawRay(transform.position, Vector2.right * 1f, Color.blue);
+
+        bluePos = new Vector2(transform.position.x, transform.position.y - .1f);
+        Debug.DrawRay(bluePos, Vector2.right * .5f, Color.blue);
 
     }
 
     private void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 1f, ~ignoreCol);
-        if (hit.collider.CompareTag("Enemy"))
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, .5f, ~ignoreCol);
+        if (hit)
         {
-            beingHit = true;
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                beingHit = true;
+            }
         }
         else
         {
@@ -90,7 +93,6 @@ public class PlayerDeath : MonoBehaviour
         isDead = true;
         hitCD = 0;
 
-        anim.ResetTrigger("Hurt");
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.SetBool("noBlood", false);
         anim.SetTrigger("Death");

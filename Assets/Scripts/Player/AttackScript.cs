@@ -19,6 +19,7 @@ public class AttackScript : MonoBehaviour
 
     [Header("Attacking")]
     private float attackRange;
+    private IEnumerator sa;
     public bool canAttack { get; private set; }
     [SerializeField] private float canAttackCount;
     private float canAttackTimer;
@@ -55,6 +56,8 @@ public class AttackScript : MonoBehaviour
     }
     private void Update()
     {
+        sa = SwingAnim();
+
         Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
         //Debug.Log(inRange);
         //RANGE
@@ -90,15 +93,19 @@ public class AttackScript : MonoBehaviour
         playerAttack.performed += Attack;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
-        if (hit.collider.CompareTag("Enemy"))
+        if (hit)
         {
-            attackRange = hit.point.x - transform.position.x;
-            //Debug.Log(attackRange);
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                attackRange = hit.point.x - transform.position.x;
+                //Debug.Log(attackRange);
+            }
         }
         else
         {
-            Debug.Log("Player not found!");
+            return;
         }
+        
 
         if (pKnockBack)
         {
@@ -127,29 +134,24 @@ public class AttackScript : MonoBehaviour
     {
         UpdateAttackAnimation();
     }
+
+    private IEnumerator SwingAnim()
+    {
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.SetTrigger("Attack1");
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.ResetTrigger("Attack1");
+    }
+
     private void UpdateAttackAnimation()
     {
         if (playerAttack.WasPressedThisFrame())
         {
-            if (canAttack)
-            {
-                anim.SetTrigger("Attack1");
-                canAttack = false;
-            }
-            else
-            {
-                canAttack = true;
-            }
-
-            if (!canAttack)
-            {
-                canAttackTimer -= 1 * Time.deltaTime;
-                if (canAttackTimer <= 0) { canAttackTimer = 0; }
-                if (canAttackTimer == 0)
-                {
-                    canAttack = true;
-                }
-            }
+            StartCoroutine(sa);
+        }
+        else
+        {
+            StopCoroutine(sa);
         }
     }
 
