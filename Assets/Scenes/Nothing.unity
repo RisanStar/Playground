@@ -908,7 +908,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4
   hp: 4
-  hitCD: 0.7
+  iFrames: 1
+  hitCD: 0.2
   dRTime: 1.5
 --- !u!114 &728634016
 MonoBehaviour:

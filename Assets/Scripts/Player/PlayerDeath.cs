@@ -13,8 +13,9 @@ public class PlayerDeath : MonoBehaviour
 
     [Header("Health")]
     [SerializeField] private float hp;
-    private float hitRange;
     private bool beingHit;
+    private bool hasIFrames;
+    [SerializeField] private float iFrames;
     [SerializeField] private float hitCD;
     private float hitCoolDown;
     private float hitCount;
@@ -44,8 +45,32 @@ public class PlayerDeath : MonoBehaviour
         {
             StartCoroutine(DeathRestart());
         }
+        else
+        {
+            if (beingHit)
+            {
+                StartCoroutine(GettingHit());
+            }
+            else
+            {
+                StopCoroutine(GettingHit());
+            }
 
-        Debug.Log(hitCoolDown);
+            if (hitCount >= hp)
+            {
+                deathCount = 1;
+            }
+        }
+
+        
+           
+        
+
+        //ANIMATION
+        UpdateHealthAnimation();
+
+        Debug.Log("The hit CD is " + hitCoolDown);
+        Debug.Log("The I-frames are " + iFrames);
         //Debug.DrawRay(transform.position, Vector2.right * .7f, Color.blue);
 
     }
@@ -61,9 +86,6 @@ public class PlayerDeath : MonoBehaviour
         {
             beingHit = false;
         }
-
-        //ANIMATION
-        UpdateHealthAnimation();
     }
 
     private IEnumerator DeathRestart()
@@ -72,50 +94,61 @@ public class PlayerDeath : MonoBehaviour
         SceneManager.LoadScene("nothing");
     }
 
+    private IEnumerator GettingHit()
+    {
+        yield return new WaitUntil(() => !hasIFrames);
+        hitCoolDown -= 1 * Time.deltaTime;
+
+        yield return new WaitUntil(() => hitCoolDown <= 0);
+        hitCoolDown = hitCD;
+        hasIFrames = true;
+
+        if (hasIFrames)
+        {
+            hitCount++;
+            yield return new WaitForSeconds(iFrames);
+            hasIFrames = false;
+        }
+
+    }
+
+    private IEnumerator HitAnim()
+    {
+        anim.SetTrigger("Hurt");
+        yield return new WaitForSeconds(iFrames);
+    }
+
     private void UpdateHealthAnimation()
     {
-        if (!isDead)
+
+        if (beingHit)
         {
-            if (beingHit)
-            {
-                hitCoolDown -= 1 * Time.deltaTime;
-                if (hitCoolDown <= 0) { hitCoolDown = 0; }
-                if (hitCoolDown == 0)
-                {
-                    hitCoolDown = hitCD;
-                }
-
-                if (hitCount >= 3) { hitCount = 3; }
-                if (hitCount == 3)
-                {
-                    deathCount = 1;
-                }
-
-                if (hitCoolDown == hitCD)
-                {
-                    anim.SetTrigger("Hurt");
-                    hitCount++;
-
-                }
-
-
-                if (deathCount == 1)
-                {
-                    anim.SetBool("noBlood", false);
-                    anim.SetTrigger("Death");
-
-                    hitCD = 0;
-                    isDead = true;
-
-                }
-                else
-                {
-                    isDead = false;
-
-                }
-            }
+            StartCoroutine(HitAnim());
         }
+        else
+        {
+            StopCoroutine(HitAnim());
+        }
+
+
+        if (deathCount == 1)
+        {
+            anim.SetBool("noBlood", false);
+            anim.SetTrigger("Death");
+
+            hitCD = 0;
+            isDead = true;
+
+        }
+        else
+        {
+            isDead = false;
+
+        }
+
     }
+        
+    
 }
 
 
