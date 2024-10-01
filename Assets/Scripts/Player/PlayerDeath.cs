@@ -14,6 +14,8 @@ public class PlayerDeath : MonoBehaviour
     [Header("Health")]
     [SerializeField] private float hp;
     private bool beingHit;
+    private IEnumerator bh;
+    private IEnumerator ha;
     private bool hasIFrames;
     [SerializeField] private float iFrames;
     [SerializeField] private float hitCD;
@@ -36,24 +38,24 @@ public class PlayerDeath : MonoBehaviour
 
     private void Update()
     {
+        bh = GettingHit();
+        ha = HitAnim();
+
         if (transform.position.y < -5)
         {
             SceneManager.LoadScene("nothing");
         }
 
-        if (isDead)
-        {
-            StartCoroutine(DeathRestart());
-        }
-        else
+
+        if (!isDead) 
         {
             if (beingHit)
             {
-                StartCoroutine(GettingHit());
+                StartCoroutine(bh);
             }
             else
             {
-                StopCoroutine(GettingHit());
+                StopCoroutine(bh);
             }
 
             if (hitCount >= hp)
@@ -62,16 +64,11 @@ public class PlayerDeath : MonoBehaviour
             }
         }
 
-        
-           
-        
-
         //ANIMATION
         UpdateHealthAnimation();
 
-        Debug.Log("The hit CD is " + hitCoolDown);
-        Debug.Log("The I-frames are " + iFrames);
-        //Debug.DrawRay(transform.position, Vector2.right * .7f, Color.blue);
+        Debug.Log(anim.GetCurrentAnimatorStateInfo(0).IsName("Hurt"));
+        Debug.DrawRay(transform.position, Vector2.right * 1f, Color.blue);
 
     }
 
@@ -90,6 +87,16 @@ public class PlayerDeath : MonoBehaviour
 
     private IEnumerator DeathRestart()
     {
+        isDead = true;
+        hitCD = 0;
+
+        anim.ResetTrigger("Hurt");
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.SetBool("noBlood", false);
+        anim.SetTrigger("Death");
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.ResetTrigger("Death");
+
         yield return new WaitForSeconds(dRTime);
         SceneManager.LoadScene("nothing");
     }
@@ -99,56 +106,48 @@ public class PlayerDeath : MonoBehaviour
         yield return new WaitUntil(() => !hasIFrames);
         hitCoolDown -= 1 * Time.deltaTime;
 
-        yield return new WaitUntil(() => hitCoolDown <= 0);
-        hitCoolDown = hitCD;
-        hasIFrames = true;
+        if (hitCoolDown < 0) { hitCoolDown = 0; }
 
-        if (hasIFrames)
+        if (hitCoolDown <= 0)
         {
+            hitCoolDown = hitCD;
+            hasIFrames = true;
             hitCount++;
             yield return new WaitForSeconds(iFrames);
             hasIFrames = false;
         }
-
     }
 
     private IEnumerator HitAnim()
     {
         anim.SetTrigger("Hurt");
-        yield return new WaitForSeconds(iFrames);
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.ResetTrigger("Hurt");
     }
 
     private void UpdateHealthAnimation()
     {
-
-        if (beingHit)
+        if (!isDead)
         {
-            StartCoroutine(HitAnim());
+            if (beingHit && !hasIFrames)
+            {
+                StartCoroutine(ha);
+            }
+            else
+            {
+                StopCoroutine(ha);
+            }
         }
-        else
-        {
-            StopCoroutine(HitAnim());
-        }
-
 
         if (deathCount == 1)
         {
-            anim.SetBool("noBlood", false);
-            anim.SetTrigger("Death");
-
-            hitCD = 0;
-            isDead = true;
-
+            StartCoroutine(DeathRestart());
         }
         else
         {
             isDead = false;
-
         }
-
     }
-        
-    
 }
 
 
