@@ -39,7 +39,10 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Rolling")]
     [SerializeField] private float rollForce;
+    [SerializeField] private float rollTime;
     private bool canRoll;
+    private IEnumerator ra;
+
     private enum AnimState {idle, running, jumping, rolling}
     private void Awake()
     {
@@ -71,6 +74,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        ra = RollAnim();
+
         //JUMP BUFFER
         if (Keyboard.current.spaceKey.IsActuated(.4f) && !deathScript.isDead)
         {
@@ -85,13 +90,15 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (playerRoll.WasPerformedThisFrame())
+        if (playerRoll.WasPressedThisFrame() && rollTime <= 0)
         {
             canRoll = true;
+            rollTime += rollTime;
         }
         else
         {
             canRoll = false;
+            rollTime -= Time.deltaTime;
         }
 
         //SPRITE DIRECTION
@@ -158,6 +165,14 @@ public class PlayerMovement : MonoBehaviour
         return Physics2D.OverlapCircle(groundCheck.position, .05f, ground);
     }
 
+    private IEnumerator RollAnim()
+    {
+        anim.SetTrigger("Roll");
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.ResetTrigger("Roll");
+
+    }
+
     private void UpdateMovementAnimation()
     {
         AnimState state;
@@ -181,7 +196,11 @@ public class PlayerMovement : MonoBehaviour
         //ROLL ANIM
         if (canRoll)
         {
-           anim.SetTrigger("Roll");
+            StartCoroutine(ra);
+        }
+        else
+        {
+            StopCoroutine(ra);
         }
         
 

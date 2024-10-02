@@ -833,6 +833,7 @@ MonoBehaviour:
   coyoteTime: 0.2
   jumpBuffTime: 0.4
   rollForce: 2
+  rollTime: 0.5
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0
