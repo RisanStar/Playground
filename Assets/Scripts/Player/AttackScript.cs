@@ -19,16 +19,21 @@ public class AttackScript : MonoBehaviour
 
     [Header("Attacking")]
     private float attackRange;
-    private IEnumerator sa;
-    public bool canAttack { get; private set; }
-    [SerializeField] private float canAttackCount;
-    private float canAttackTimer;
+    private IEnumerator sa1;
+    private IEnumerator sa2;
+    private IEnumerator sa3;
+    [SerializeField] private float swingTime;
+    private bool canAttackAgain;
     private bool inRange;
     [SerializeField] private GameObject enemy;
     public bool pKnockBack { get; private set; }
     [SerializeField] private float pKnockBackPower;
     [SerializeField] private float pKnockBackCount;
     private float pKnockBackTimer;
+    private bool attack1;
+    private bool attack2;
+    private bool attack3;
+    private float attackBuffTime;
 
     private void Awake()
     {
@@ -48,15 +53,26 @@ public class AttackScript : MonoBehaviour
 
     private void Start()
     {
-        canAttackTimer = canAttackCount;
+        attack1 = true;
         pKnockBackTimer = pKnockBackCount;
 
-        canAttack = true;
         pKnockBack = false;
     }
     private void Update()
     {
-        sa = SwingAnim();
+        sa1 = SwingAnim1();
+        sa2 = SwingAnim2();
+        sa3 = SwingAnim3();
+
+        if (attack2 || attack3)
+        {
+            attackBuffTime -= Time.deltaTime;
+            if (attackBuffTime <= 0)
+            {
+                attackBuffTime = 0;
+                attack1 = true;
+            }
+        }
 
         Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
         //Debug.Log(inRange);
@@ -70,12 +86,6 @@ public class AttackScript : MonoBehaviour
             inRange = false;
         }
 
-        //ATTACKING
-        if (canAttack)
-        {
-            canAttackTimer = canAttackCount;
-        }
-
         if (pKnockBack)
         {
             pKnockBackTimer -= 1 * Time.deltaTime;
@@ -86,6 +96,8 @@ public class AttackScript : MonoBehaviour
                 pKnockBackTimer = pKnockBackCount;
             }
         }
+
+        UpdateAttackAnimation();
     }
 
     private void FixedUpdate()
@@ -130,29 +142,79 @@ public class AttackScript : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    private IEnumerator SwingAnim1()
     {
-        UpdateAttackAnimation();
-    }
-
-    private IEnumerator SwingAnim()
-    {
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        attack2 = false;
+        attack3 = false;
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttackAgain);
         anim.SetTrigger("Attack1");
+        attack1 = false;
+        canAttackAgain = false;
+        yield return new WaitForSeconds(swingTime);
+        attack2 = true;
+        canAttackAgain = true;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Attack1");
+    }
+
+    private IEnumerator SwingAnim2()
+    {
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.SetTrigger("Attack2");
+        attack2 = false;
+        yield return new WaitForSeconds(swingTime);
+        attack3 = true;
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.ResetTrigger("Attack2");
+    }
+
+    private IEnumerator SwingAnim3()
+    {
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.SetTrigger("Attack3");
+        attack3 = false;
+        yield return new WaitForSeconds(swingTime);
+        attack1 = true;
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.ResetTrigger("Attack3");
     }
 
     private void UpdateAttackAnimation()
     {
         if (playerAttack.WasPressedThisFrame())
         {
-            StartCoroutine(sa);
+            if (attack1)
+            {
+               StartCoroutine(sa1);
+               attackBuffTime = .4f;
+            }
+
+            if (attack2 && attackBuffTime > 0)
+            {
+               StartCoroutine(sa2);
+               attackBuffTime = .4f;
+            }
+            else
+            {
+                StopCoroutine(sa2);
+            }
+
+            if (attack3 && attackBuffTime > 0)
+            {
+               StartCoroutine(sa3); 
+            }
+            else
+            {
+                StopCoroutine(sa3);
+            }
+
         }
         else
         {
-            StopCoroutine(sa);
+            StopCoroutine(sa1);
+            canAttackAgain = true;
         }
+
     }
 
 }

@@ -907,7 +907,7 @@ MonoBehaviour:
   ignoreCol:
     serializedVersion: 2
     m_Bits: 4
-  hp: 4
+  hp: 3
   iFrames: 1
   hitCD: 0.2
   dRTime: 1.5
@@ -948,7 +948,7 @@ MonoBehaviour:
   ignoreCol:
     serializedVersion: 2
     m_Bits: 4
-  canAttackCount: 0.2
+  swingTime: 0.3
   enemy: {fileID: 1609639157}
   pKnockBackPower: 0.4
   pKnockBackCount: 0.2
@@ -1207,7 +1207,7 @@ MonoBehaviour:
   ignoreCol:
     serializedVersion: 2
     m_Bits: 0
-  canAttackCount: 0
+  swingTime: 0
   enemy: {fileID: 0}
   pKnockBackPower: 0
   pKnockBackCount: 0

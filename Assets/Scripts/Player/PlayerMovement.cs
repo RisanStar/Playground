@@ -134,7 +134,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (canRoll)
         {
-           rb.AddForce(Vector2.left * rollForce, ForceMode2D.Impulse);
+           rb.AddForce(Vector2.left * rollForce);
         }
 
         //COYOTE & LANDING
