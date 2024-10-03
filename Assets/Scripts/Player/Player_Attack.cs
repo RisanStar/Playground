@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class AttackScript : MonoBehaviour
+public class Player_Attack: MonoBehaviour
 {
     [SerializeField] private PlayerControls playerCntrls;
     [SerializeField] private InputAction playerAttack;
@@ -13,7 +13,7 @@ public class AttackScript : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
 
-    [SerializeField] private PlayerMovement playerMove;
+    [SerializeField] private Player_Movement playerMove;
 
     [SerializeField] private LayerMask ignoreCol;
 

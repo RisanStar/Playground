@@ -2,21 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class Enemy_Movement : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private GameObject pGo;
+    [SerializeField] private Animator anim;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     [Header("Walking & Running")]
     [SerializeField] private float speed;
 
+    [Header("Jumping")]
+    [SerializeField] private LayerMask ground;
+    [SerializeField] private Transform groundCheck;
+
     [Header("Taking Damage")]
-    [SerializeField] private AttackScript attackScript;
+    [SerializeField] private Player_Attack pAttack;
     private bool eKnockBack;
     [SerializeField] private float eKnockBackPower;
 
     public LayerMask ignoreCol;
 
+    private enum AnimState { idle, running, jumping, }
     private void Start()
     {
         eKnockBack = false;
@@ -31,8 +38,17 @@ public class EnemyMovement : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, pGo.transform.position, speed * Time.deltaTime);
         }
 
+        if (transform.position.x < transform.position.x)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else
+        {
+            spriteRenderer.flipX = false;
+        }
+
         //E-KNOCKBACK
-        if (attackScript.pKnockBack)
+        if (pAttack.pKnockBack)
         {
             eKnockBack = true;
         }
@@ -41,6 +57,7 @@ public class EnemyMovement : MonoBehaviour
             eKnockBack = false;
         }
         
+       UpdateMovementAnimation();
     }
     private void FixedUpdate()
     {
@@ -52,7 +69,7 @@ public class EnemyMovement : MonoBehaviour
             {
                 Debug.Log("Hitting player");
             }
-        } 
+        }
         else
         {
             return;
@@ -60,8 +77,36 @@ public class EnemyMovement : MonoBehaviour
 
         if (eKnockBack)
         {
-           rb.AddForce(Vector2.right * eKnockBackPower, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * eKnockBackPower, ForceMode2D.Impulse);
         }
 
-   }
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, .05f, ground);
+    }
+
+    private void UpdateMovementAnimation()
+    {
+        AnimState state;
+        //LAND ANIM
+        if (IsGrounded())
+        {
+            anim.SetBool("Grounded", true);
+            anim.SetBool("canLand", false);
+        }
+
+        //RUN & IDLE ANIM
+        if (rb.velocity.x > 0f || rb.velocity.x < 0f && IsGrounded())
+        {
+            state = AnimState.running;
+        }
+        else
+        {
+            state = AnimState.idle;
+        }
+
+        anim.SetInteger("AnimState", (int)state);
+    }
 }

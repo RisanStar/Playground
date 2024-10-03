@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerDeath : MonoBehaviour
+public class Player_Death : MonoBehaviour
 {
     [SerializeField] private CapsuleCollider2D cCollider;
     [SerializeField] private Animator anim;

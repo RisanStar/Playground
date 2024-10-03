@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
-public class PlayerMovement : MonoBehaviour
+public class Player_Movement : MonoBehaviour
 {
     [SerializeField] private PlayerControls playerCntrls;
     [SerializeField] private InputAction playerMovement;
@@ -17,8 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
 
-    [SerializeField] private AttackScript attackScript;
-    [SerializeField] private PlayerDeath deathScript;
+    [SerializeField] private Player_Attack attackScript;
+    [SerializeField] private Player_Death deathScript;
 
     public Vector2 moveDir { get; private set; }
 
@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
     private bool canRoll;
     private IEnumerator ra;
 
-    private enum AnimState {idle, running, jumping, rolling}
+    private enum AnimState {idle, running, jumping}
     private void Awake()
     {
         playerCntrls = new PlayerControls();
