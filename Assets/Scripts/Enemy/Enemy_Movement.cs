@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 
 public class Enemy_Movement : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D pRb;
     [SerializeField] private GameObject pGo;
     [SerializeField] private Animator anim;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     [Header("Walking & Running")]
     [SerializeField] private float speed;
+    private bool moving;
 
     [Header("Jumping")]
     [SerializeField] private LayerMask ground;
     [SerializeField] private Transform groundCheck;
+    private Vector3 gravity;
 
     [Header("Taking Damage")]
     [SerializeField] private Player_Attack pAttack;
@@ -30,22 +34,9 @@ public class Enemy_Movement : MonoBehaviour
     }
     private void Update()
     {
-        Debug.DrawRay(transform.position, Vector2.left * 10, Color.red);
+        Debug.DrawRay(transform.position, Vector2.left * 5, Color.red);
 
-        //PLAYER-FOLLOW
-        if (Vector2.Distance(transform.position, pGo.transform.position) > 0f)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, pGo.transform.position, speed * Time.deltaTime);
-        }
-
-        if (transform.position.x < transform.position.x)
-        {
-            spriteRenderer.flipX = true;
-        }
-        else
-        {
-            spriteRenderer.flipX = false;
-        }
+        gravity += Physics.gravity * Time.deltaTime;
 
         //E-KNOCKBACK
         if (pAttack.pKnockBack)
@@ -61,25 +52,51 @@ public class Enemy_Movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        //E-RAYCAST
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
-        if (hit)
+        if (!IsGrounded())
         {
-            if (hit.collider.CompareTag("Player"))
+            transform.position += gravity * Time.deltaTime;
+        }
+
+        if (inRange())
+        {
+            //PLAYER-FOLLOW
+            if (Vector2.Distance(transform.position, pGo.transform.position) > 0)
             {
+                transform.position = Vector2.MoveTowards(transform.position, new Vector2(pGo.transform.position.x, transform.position.y), speed * Time.deltaTime);
+                moving = true;
+            }
+        }
+        else
+        {
+            moving = false;
+        }
+
+        //E-RAYCAST
+        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
+        if (lefthit)
+        {
+            if (lefthit.collider.CompareTag("Player"))
+            {
+                spriteRenderer.flipX = true;
                 Debug.Log("Hitting player");
             }
         }
         else
         {
-            return;
+            spriteRenderer.flipX = false;
         }
+
 
         if (eKnockBack)
         {
             rb.AddForce(Vector2.right * eKnockBackPower, ForceMode2D.Impulse);
         }
 
+    }
+
+    private bool inRange()
+    {
+        return Physics2D.OverlapCircle(transform.position, 5f, 7);
     }
 
     private bool IsGrounded()
@@ -98,7 +115,7 @@ public class Enemy_Movement : MonoBehaviour
         }
 
         //RUN & IDLE ANIM
-        if (rb.velocity.x > 0f || rb.velocity.x < 0f && IsGrounded())
+        if (moving && IsGrounded())
         {
             state = AnimState.running;
         }
