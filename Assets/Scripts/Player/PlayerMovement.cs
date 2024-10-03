@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -90,15 +91,13 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (playerRoll.WasPressedThisFrame() && rollTime <= 0)
+        if (playerRoll.WasPressedThisFrame())
         {
             canRoll = true;
-            rollTime += rollTime;
         }
         else
         {
             canRoll = false;
-            rollTime -= Time.deltaTime;
         }
 
         //SPRITE DIRECTION
@@ -123,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
         //WALKING & RUNNING
         moveDir = playerMovement.ReadValue<Vector2>();
 
-        if (!attackScript.pKnockBack && !deathScript.isDead)
+        if (!attackScript.pKnockBack && !deathScript.isDead && !canRoll)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
 
@@ -134,14 +133,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //JUMPING
-        if (jumpBuffTime > 0f && coyoteTime > 0f)
+        if (jumpBuffTime > 0f && coyoteTime > 0f && !canRoll)
         {
            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        }
-
-        if (canRoll)
-        {
-           rb.AddForce(Vector2.left * rollForce);
         }
 
         //COYOTE & LANDING
@@ -170,7 +164,6 @@ public class PlayerMovement : MonoBehaviour
         anim.SetTrigger("Roll");
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Roll");
-
     }
 
     private void UpdateMovementAnimation()
