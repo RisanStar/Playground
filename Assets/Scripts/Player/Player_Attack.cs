@@ -14,6 +14,8 @@ public class Player_Attack: MonoBehaviour
     [SerializeField] private Animator anim;
 
     [SerializeField] private Player_Movement playerMove;
+    [SerializeField] private Enemy_Death eneDeath;
+    [SerializeField] private Player_Death playerDeath;
 
     [SerializeField] private LayerMask ignoreCol;
 
@@ -30,10 +32,12 @@ public class Player_Attack: MonoBehaviour
     [SerializeField] private float pKnockBackPower;
     [SerializeField] private float pKnockBackCount;
     private float pKnockBackTimer;
-    private bool attack1;
-    private bool attack2;
-    private bool attack3;
+    private bool pAttack1;
+    private bool pAttack2;
+    private bool pAttack3;
     private float attackBuffTime;
+
+    public bool eDamage {  get; private set; }
 
     private void Awake()
     {
@@ -53,24 +57,26 @@ public class Player_Attack: MonoBehaviour
 
     private void Start()
     {
-        attack1 = true;
+        pAttack1 = true;
         pKnockBackTimer = pKnockBackCount;
 
         pKnockBack = false;
     }
     private void Update()
     {
+        playerAttack.performed += Attack;
+
         sa1 = SwingAnim1();
         sa2 = SwingAnim2();
         sa3 = SwingAnim3();
 
-        if (attack2 || attack3)
+        if (pAttack2 || pAttack3)
         {
             attackBuffTime -= Time.deltaTime;
             if (attackBuffTime <= 0)
             {
                 attackBuffTime = 0;
-                attack1 = true;
+                pAttack1 = true;
             }
         }
 
@@ -102,8 +108,6 @@ public class Player_Attack: MonoBehaviour
 
     private void FixedUpdate()
     {
-        playerAttack.performed += Attack;
-
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
         if (hit)
         {
@@ -138,21 +142,26 @@ public class Player_Attack: MonoBehaviour
             if (inRange)
             {
                 pKnockBack = true;
-                eDamage++;
+                eDamage = true;
+
             }
+        }
+        else
+        {
+            eDamage = false;
         }
     }
 
     private IEnumerator SwingAnim1()
     {
-        attack2 = false;
-        attack3 = false;
+        pAttack2 = false;
+        pAttack3 = false;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttackAgain);
         anim.SetTrigger("Attack1");
-        attack1 = false;
+        pAttack1 = false;
         canAttackAgain = false;
         yield return new WaitForSeconds(swingTime);
-        attack2 = true;
+        pAttack2 = true;
         canAttackAgain = true;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Attack1");
@@ -162,9 +171,9 @@ public class Player_Attack: MonoBehaviour
     {
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.SetTrigger("Attack2");
-        attack2 = false;
+        pAttack2 = false;
         yield return new WaitForSeconds(swingTime);
-        attack3 = true;
+        pAttack3 = true;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Attack2");
     }
@@ -173,24 +182,24 @@ public class Player_Attack: MonoBehaviour
     {
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.SetTrigger("Attack3");
-        attack3 = false;
+        pAttack3 = false;
         yield return new WaitForSeconds(swingTime);
-        attack1 = true;
+        pAttack1 = true;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Attack3");
     }
 
     private void UpdateAttackAnimation()
     {
-        if (playerAttack.WasPressedThisFrame())
+        if (playerAttack.WasPressedThisFrame() && !playerDeath.pIsDead)
         {
-            if (attack1)
+            if (pAttack1)
             {
                StartCoroutine(sa1);
                attackBuffTime = .4f;
             }
 
-            if (attack2 && attackBuffTime > 0)
+            if (pAttack2 && attackBuffTime > 0)
             {
                StartCoroutine(sa2);
                attackBuffTime = .4f;
@@ -200,7 +209,7 @@ public class Player_Attack: MonoBehaviour
                 StopCoroutine(sa2);
             }
 
-            if (attack3 && attackBuffTime > 0)
+            if (pAttack3 && attackBuffTime > 0)
             {
                StartCoroutine(sa3); 
             }

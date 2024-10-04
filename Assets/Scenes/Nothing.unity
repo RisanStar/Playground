@@ -1098,7 +1098,7 @@ MonoBehaviour:
   ignoreCol:
     serializedVersion: 2
     m_Bits: 4
-  hp: 3
+  pHp: 3
   iFrames: 1
   hitCD: 0.2
   dRTime: 1.5
@@ -1136,6 +1136,8 @@ MonoBehaviour:
   rb: {fileID: 728634014}
   anim: {fileID: 360653377}
   playerMove: {fileID: 728634012}
+  eneDeath: {fileID: 1609639163}
+  playerDeath: {fileID: 728634015}
   ignoreCol:
     serializedVersion: 2
     m_Bits: 4
@@ -1395,6 +1397,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   anim: {fileID: 0}
   playerMove: {fileID: 0}
+  eneDeath: {fileID: 0}
+  playerDeath: {fileID: 0}
   ignoreCol:
     serializedVersion: 2
     m_Bits: 0
@@ -1742,6 +1746,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1609639161}
   - component: {fileID: 1609639162}
+  - component: {fileID: 1609639163}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -1783,7 +1788,7 @@ MonoBehaviour:
   pGo: {fileID: 728634010}
   anim: {fileID: 600505965}
   spriteRenderer: {fileID: 600505963}
-  playerMove: {fileID: 0}
+  playerMove: {fileID: 728634012}
   speed: 1.5
   ground:
     serializedVersion: 2
@@ -1794,6 +1799,21 @@ MonoBehaviour:
   ignoreCol:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &1609639163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609639157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a4694aeefb46204c80ad8ea34787d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 600505965}
+  playerAttack: {fileID: 0}
+  eHp: 0
 --- !u!1 &1722087515
 GameObject:
   m_ObjectHideFlags: 0

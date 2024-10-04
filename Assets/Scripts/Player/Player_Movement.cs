@@ -78,7 +78,7 @@ public class Player_Movement : MonoBehaviour
         ra = RollAnim();
 
         //JUMP BUFFER
-        if (Keyboard.current.spaceKey.IsActuated(.4f) && !deathScript.isDead)
+        if (Keyboard.current.spaceKey.IsActuated(.4f) && !deathScript.pIsDead)
         {
             jumpBuffTime = .4f;
         }
@@ -101,7 +101,7 @@ public class Player_Movement : MonoBehaviour
         }
 
         //SPRITE DIRECTION
-        if (!deathScript.isDead)
+        if (!deathScript.pIsDead)
         {
             if (moveDir.x < 0f)
             {
@@ -122,7 +122,7 @@ public class Player_Movement : MonoBehaviour
         //WALKING & RUNNING
         moveDir = playerMovement.ReadValue<Vector2>();
 
-        if (!attackScript.pKnockBack && !deathScript.isDead && !canRoll)
+        if (!attackScript.pKnockBack && !deathScript.pIsDead && !canRoll)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
 
@@ -171,7 +171,7 @@ public class Player_Movement : MonoBehaviour
     {
         AnimState state;
         //LAND ANIM
-        if (IsGrounded() && !deathScript.isDead)
+        if (IsGrounded() && !deathScript.pIsDead)
         {
             anim.SetBool("Grounded", true);
             anim.SetBool("canLand", false);
@@ -199,7 +199,7 @@ public class Player_Movement : MonoBehaviour
         
 
         //JUMP ANIM
-        if (rb.velocity.y > 0 && !IsGrounded() && !deathScript.isDead)
+        if (rb.velocity.y > 0 && !IsGrounded() && !deathScript.pIsDead)
         {
             anim.SetTrigger("Jump");
             anim.SetBool("Grounded", false);

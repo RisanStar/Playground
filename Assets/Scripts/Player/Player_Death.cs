@@ -13,7 +13,7 @@ public class Player_Death : MonoBehaviour
     private Vector2 bluePos;
 
     [Header("Health")]
-    [SerializeField] private float hp;
+    [SerializeField] private float pHp;
     private bool beingHit;
     private IEnumerator bh;
     private IEnumerator ha;
@@ -24,11 +24,11 @@ public class Player_Death : MonoBehaviour
     private float hitCount;
     private float deathCount;
     [SerializeField] private float dRTime;
-    public bool isDead { get; private set; }
+    public bool pIsDead { get; private set; }
 
     private void Awake()
     {
-        isDead = false;
+        pIsDead = false;
         deathCount = 0;
     }
 
@@ -57,7 +57,7 @@ public class Player_Death : MonoBehaviour
             StopCoroutine(bh);
         }
 
-        if (hitCount >= hp)
+        if (hitCount >= pHp)
         {
             deathCount = 1;
         }
@@ -90,7 +90,7 @@ public class Player_Death : MonoBehaviour
 
     private IEnumerator DeathRestart()
     {
-        isDead = true;
+        pIsDead = true;
         hitCD = 0;
 
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
@@ -129,7 +129,7 @@ public class Player_Death : MonoBehaviour
 
     private void UpdateHealthAnimation()
     {
-        if (!isDead)
+        if (!pIsDead)
         {
             if (beingHit && !hasIFrames)
             {
@@ -147,7 +147,7 @@ public class Player_Death : MonoBehaviour
         }
         else
         {
-            isDead = false;
+            pIsDead = false;
         }
     }
 }
