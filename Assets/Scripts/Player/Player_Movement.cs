@@ -152,6 +152,7 @@ public class Player_Movement : MonoBehaviour
         {
             coyoteTime = .2f;
         }
+        
     }
 
     private bool IsGrounded()

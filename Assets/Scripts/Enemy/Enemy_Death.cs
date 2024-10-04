@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Enemy_Death : MonoBehaviour
 {
+    [Header("Health")]
+    [SerializeField] private float hp;
     // Start is called before the first frame update
     void Start()
     {

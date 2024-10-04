@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class Enemy_Movement : MonoBehaviour
 {
-    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Rigidbody2D pRb;
     [SerializeField] private GameObject pGo;
     [SerializeField] private Animator anim;
     [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [SerializeField] private Player_Movement playerMove;
 
     [Header("Walking & Running")]
     [SerializeField] private float speed;
@@ -89,7 +90,7 @@ public class Enemy_Movement : MonoBehaviour
 
         if (eKnockBack)
         {
-            rb.AddForce(Vector2.right * eKnockBackPower, ForceMode2D.Impulse);
+
         }
 
     }

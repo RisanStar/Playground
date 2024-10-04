@@ -138,6 +138,7 @@ public class Player_Attack: MonoBehaviour
             if (inRange)
             {
                 pKnockBack = true;
+                eDamage++;
             }
         }
     }

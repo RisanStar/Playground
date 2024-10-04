@@ -219,8 +219,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.2}
-  m_Size: {x: 1, y: 1.5}
+  m_Offset: {x: -0.007027924, y: -0.2456814}
+  m_Size: {x: 0.7329391, y: 1.408637}
   m_Direction: 0
 --- !u!1 &125350015
 GameObject:
@@ -1779,11 +1779,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bedd83c27ae7721439a29f53a3395c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
   pRb: {fileID: 728634014}
   pGo: {fileID: 728634010}
   anim: {fileID: 600505965}
   spriteRenderer: {fileID: 600505963}
+  playerMove: {fileID: 0}
   speed: 1.5
   ground:
     serializedVersion: 2
@@ -1953,7 +1953,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.27079773, y: 1.0045129}
+  m_Size: {x: 0.36825466, y: 1.0045129}
   m_EdgeRadius: 0
 --- !u!1 &1856938047
 GameObject:
