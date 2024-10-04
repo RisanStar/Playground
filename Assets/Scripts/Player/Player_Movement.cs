@@ -1,9 +1,6 @@
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
 
 public class Player_Movement : MonoBehaviour
 {
@@ -169,48 +166,51 @@ public class Player_Movement : MonoBehaviour
 
     private void UpdateMovementAnimation()
     {
-        AnimState state;
-        //LAND ANIM
-        if (IsGrounded() && !deathScript.pIsDead)
+        if (!deathScript.pIsDead)
         {
-            anim.SetBool("Grounded", true);
-            anim.SetBool("canLand", false);
-        }
-
-        //RUN & IDLE ANIM
-        if (rb.velocity.x > 0f || rb.velocity.x < 0f && IsGrounded())
-        {
-            state = AnimState.running;
-        }
-        else
-        {
-            state = AnimState.idle;
-        }
-
-        //ROLL ANIM
-        if (canRoll)
-        {
-            StartCoroutine(ra);
-        }
-        else
-        {
-            StopCoroutine(ra);
-        }
-        
-
-        //JUMP ANIM
-        if (rb.velocity.y > 0 && !IsGrounded() && !deathScript.pIsDead)
-        {
-            anim.SetTrigger("Jump");
-            anim.SetBool("Grounded", false);
-            canLandTimer -= 1 * Time.deltaTime;
-            if (canLandTimer <= 0) {canLandTimer = 0;}
-            if (canLandTimer == 0)
+            AnimState state;
+            //LAND ANIM
+            if (IsGrounded())
             {
-                anim.SetBool("canLand", true);
+                anim.SetBool("Grounded", true);
+                anim.SetBool("canLand", false);
             }
-        }
 
-        anim.SetInteger("AnimState", (int)state);
+            //RUN & IDLE ANIM
+            if (rb.velocity.x > 0f || rb.velocity.x < 0f && IsGrounded())
+            {
+                state = AnimState.running;
+            }
+            else
+            {
+                state = AnimState.idle;
+            }
+
+            //ROLL ANIM
+            if (canRoll)
+            {
+                StartCoroutine(ra);
+            }
+            else
+            {
+                StopCoroutine(ra);
+            }
+
+
+            //JUMP ANIM
+            if (rb.velocity.y > 0 && !IsGrounded())
+            {
+                anim.SetTrigger("Jump");
+                anim.SetBool("Grounded", false);
+                canLandTimer -= 1 * Time.deltaTime;
+                if (canLandTimer <= 0) { canLandTimer = 0; }
+                if (canLandTimer == 0)
+                {
+                    anim.SetBool("canLand", true);
+                }
+            }
+
+            anim.SetInteger("AnimState", (int)state);
+        }
     }
 }

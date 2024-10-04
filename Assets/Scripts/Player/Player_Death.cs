@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -65,7 +63,6 @@ public class Player_Death : MonoBehaviour
         //ANIMATION
         UpdateHealthAnimation();
 
-        Debug.Log(anim.GetCurrentAnimatorStateInfo(0).IsName("Hurt"));
 
         bluePos = new Vector2(transform.position.x, transform.position.y - .1f);
         Debug.DrawRay(bluePos, Vector2.right * .5f, Color.blue);

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -64,7 +63,18 @@ public class Player_Attack: MonoBehaviour
     }
     private void Update()
     {
-        playerAttack.performed += Attack;
+        if (playerAttack.WasPressedThisFrame() && canAttackAgain)
+        {
+            if (inRange)
+            {
+                pKnockBack = true;
+                eDamage = true;
+            }
+        }
+        else
+        {
+            eDamage = false;
+        }
 
         sa1 = SwingAnim1();
         sa2 = SwingAnim2();
@@ -81,7 +91,9 @@ public class Player_Attack: MonoBehaviour
         }
 
         Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
+        Debug.Log("Player is in range: " + inRange);
         //Debug.Log(inRange);
+
         //RANGE
         if (attackRange <= 1.2f)
         {
@@ -133,22 +145,6 @@ public class Player_Attack: MonoBehaviour
             {
                 rb.AddForce(Vector2.left * pKnockBackPower, ForceMode2D.Impulse);
             }
-        }
-    }
-    private void Attack(InputAction.CallbackContext attack)
-    {
-        if (attack.performed)
-        {
-            if (inRange)
-            {
-                pKnockBack = true;
-                eDamage = true;
-
-            }
-        }
-        else
-        {
-            eDamage = false;
         }
     }
 

@@ -1789,12 +1789,13 @@ MonoBehaviour:
   anim: {fileID: 600505965}
   spriteRenderer: {fileID: 600505963}
   playerMove: {fileID: 728634012}
+  pAttack: {fileID: 728634016}
+  eneDeath: {fileID: 1609639163}
   speed: 1.5
   ground:
     serializedVersion: 2
     m_Bits: 64
   groundCheck: {fileID: 125350016}
-  pAttack: {fileID: 728634016}
   eKnockBackPower: 0.4
   ignoreCol:
     serializedVersion: 2
@@ -1812,8 +1813,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 600505965}
-  playerAttack: {fileID: 0}
-  eHp: 0
+  hitbox: {fileID: 1837383676}
+  playerAttack: {fileID: 728634016}
+  eHp: 3
 --- !u!1 &1722087515
 GameObject:
   m_ObjectHideFlags: 0

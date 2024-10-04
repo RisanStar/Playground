@@ -1,27 +1,31 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
-using UnityEngine.SceneManagement;
 
 public class Enemy_Death : MonoBehaviour
 {
     [SerializeField] private Animator anim;
+    [SerializeField] private Collider2D hitbox;
 
     [SerializeField] private Player_Attack playerAttack;
 
     [Header("Health")]
-    private bool eIsDead;
     [SerializeField] private float eHp;
+    private IEnumerator d;
+    public bool eIsDead { get; private set; }
+    private bool deathIsDone;
 
-    void Start()
+    private void Start()
     {
-
+        deathIsDone = false;
     }
 
-    void Update()
+    private void Update()
     {
-        if(playerAttack.eDamage)
+        d = Death();
+
+        Debug.Log(playerAttack.eDamage);
+
+        if (playerAttack.eDamage)
         {
             eHp--;
         }
@@ -29,14 +33,15 @@ public class Enemy_Death : MonoBehaviour
         if (eHp <= 0)
         {
             eIsDead = true;
+            hitbox.enabled = false;
         }
 
+        Debug.Log("The death anim is finsihed:  " + deathIsDone);
         UpdateHealthAnimation();
     }
 
     private IEnumerator Death()
     {
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.SetTrigger("Death");
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Death");
@@ -44,9 +49,17 @@ public class Enemy_Death : MonoBehaviour
 
     private void UpdateHealthAnimation()
     {
-        if (eIsDead)
+        if (eIsDead) 
         {
-            StartCoroutine(Death());
+            if (!deathIsDone)
+            {
+                StartCoroutine(d);
+            }
+            
+            if (deathIsDone)
+            {
+                StopCoroutine(d);
+            }
         }
     }
 }

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 
 public class Enemy_Movement : MonoBehaviour
@@ -11,6 +8,8 @@ public class Enemy_Movement : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     [SerializeField] private Player_Movement playerMove;
+    [SerializeField] private Player_Attack pAttack;
+    [SerializeField] private Enemy_Death eneDeath;
 
     [Header("Walking & Running")]
     [SerializeField] private float speed;
@@ -21,10 +20,10 @@ public class Enemy_Movement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     private Vector3 gravity;
 
-    [Header("Taking Damage")]
-    [SerializeField] private Player_Attack pAttack;
+    [Header("Damage")]
     private bool eKnockBack;
     [SerializeField] private float eKnockBackPower;
+
 
     public LayerMask ignoreCol;
 
@@ -53,49 +52,54 @@ public class Enemy_Movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (!IsGrounded())
+        if (!eneDeath.eIsDead)
         {
-            transform.position += gravity * Time.deltaTime;
-        }
-
-        if (inRange())
-        {
-            //PLAYER-FOLLOW
-            if (Vector2.Distance(transform.position, pGo.transform.position) > 0)
+            if (!IsGrounded())
             {
-                transform.position = Vector2.MoveTowards(transform.position, new Vector2(pGo.transform.position.x, transform.position.y), speed * Time.deltaTime);
-                moving = true;
+                transform.position += gravity * Time.deltaTime;
             }
-        }
-        else
-        {
-            moving = false;
-        }
 
-        //E-RAYCAST
-        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
-        if (lefthit)
-        {
-            if (lefthit.collider.CompareTag("Player"))
+            if (InRange())
             {
-                spriteRenderer.flipX = true;
-                Debug.Log("Hitting player");
+                //PLAYER-FOLLOW
+                if (Vector2.Distance(transform.position, pGo.transform.position) > 0)
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, new Vector2(pGo.transform.position.x, transform.position.y), speed * Time.deltaTime);
+                    moving = true;
+                }
             }
-        }
-        else
-        {
-            spriteRenderer.flipX = false;
-        }
+            else
+            {
+                moving = false;
+            }
+
+            //E-RAYCAST
+            RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
 
 
-        if (eKnockBack)
-        {
+            if (lefthit)
+            {
+                if (lefthit.collider.CompareTag("Player"))
+                {
+                    spriteRenderer.flipX = true;
+                }
+            }
+            else
+            {
+                spriteRenderer.flipX = false;
+            }
 
+
+
+            if (eKnockBack)
+            {
+
+            }
         }
 
     }
 
-    private bool inRange()
+    private bool InRange()
     {
         return Physics2D.OverlapCircle(transform.position, 5f, 7);
     }
@@ -107,24 +111,28 @@ public class Enemy_Movement : MonoBehaviour
 
     private void UpdateMovementAnimation()
     {
-        AnimState state;
         //LAND ANIM
-        if (IsGrounded())
+        if (!eneDeath.eIsDead)
         {
-            anim.SetBool("Grounded", true);
-            anim.SetBool("canLand", false);
+            AnimState state;
+
+            if (IsGrounded())
+            {
+                anim.SetBool("Grounded", true);
+            }
+
+            //RUN & IDLE ANIM
+            if (moving)
+            {
+                state = AnimState.running;
+            }
+            else
+            {
+                state = AnimState.idle;
+            }
+
+            anim.SetInteger("AnimState", (int)state);
         }
 
-        //RUN & IDLE ANIM
-        if (moving && IsGrounded())
-        {
-            state = AnimState.running;
-        }
-        else
-        {
-            state = AnimState.idle;
-        }
-
-        anim.SetInteger("AnimState", (int)state);
     }
 }
