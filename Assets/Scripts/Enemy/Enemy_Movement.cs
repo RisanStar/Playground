@@ -122,7 +122,7 @@ public class Enemy_Movement : MonoBehaviour
             }
 
             //RUN & IDLE ANIM
-            if (moving)
+            if (moving && IsGrounded())
             {
                 state = AnimState.running;
             }

@@ -45,6 +45,8 @@ public class Enemy_Death : MonoBehaviour
         anim.SetTrigger("Death");
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Death");
+        deathIsDone = true;
+
     }
 
     private void UpdateHealthAnimation()
@@ -55,8 +57,7 @@ public class Enemy_Death : MonoBehaviour
             {
                 StartCoroutine(d);
             }
-            
-            if (deathIsDone)
+            else
             {
                 StopCoroutine(d);
             }
