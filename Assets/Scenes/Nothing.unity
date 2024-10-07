@@ -1022,8 +1022,8 @@ MonoBehaviour:
   canLandCount: 0.3
   coyoteTime: 0.2
   jumpBuffTime: 0.4
-  rollForce: 2
-  rollTime: 0.5
+  rollForce: 3
+  rollTime: 0.2
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1788,6 +1788,7 @@ MonoBehaviour:
   pGo: {fileID: 728634010}
   anim: {fileID: 600505965}
   spriteRenderer: {fileID: 600505963}
+  hitbox: {fileID: 1837383676}
   playerMove: {fileID: 728634012}
   pAttack: {fileID: 728634016}
   eneDeath: {fileID: 1609639163}
@@ -1797,6 +1798,7 @@ MonoBehaviour:
     m_Bits: 64
   groundCheck: {fileID: 125350016}
   eKnockBackPower: 0.4
+  pIFrames: 0.4
   ignoreCol:
     serializedVersion: 2
     m_Bits: 8

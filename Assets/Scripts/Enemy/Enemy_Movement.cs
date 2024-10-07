@@ -6,6 +6,7 @@ public class Enemy_Movement : MonoBehaviour
     [SerializeField] private GameObject pGo;
     [SerializeField] private Animator anim;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Collider2D hitbox;
 
     [SerializeField] private Player_Movement playerMove;
     [SerializeField] private Player_Attack pAttack;
@@ -23,6 +24,8 @@ public class Enemy_Movement : MonoBehaviour
     [Header("Damage")]
     private bool eKnockBack;
     [SerializeField] private float eKnockBackPower;
+    [SerializeField] private float pIFrames;
+    private float pIFramesCount;
 
 
     public LayerMask ignoreCol;
@@ -47,8 +50,24 @@ public class Enemy_Movement : MonoBehaviour
         {
             eKnockBack = false;
         }
-        
-       UpdateMovementAnimation();
+
+        if (playerMove.canRoll)
+        {
+            pIFramesCount = pIFrames;
+            hitbox.enabled = false;
+        }
+        else
+        {
+            pIFramesCount -= Time.deltaTime;
+        }
+   
+        if (pIFramesCount <= 0) { pIFramesCount = 0; }
+        if (pIFramesCount == 0)
+        {
+            hitbox.enabled = true;
+        }
+
+        UpdateMovementAnimation();
     }
     private void FixedUpdate()
     {

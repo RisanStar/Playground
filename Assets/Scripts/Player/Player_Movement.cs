@@ -38,7 +38,9 @@ public class Player_Movement : MonoBehaviour
     [Header("Rolling")]
     [SerializeField] private float rollForce;
     [SerializeField] private float rollTime;
-    private bool canRoll;
+    private float rollTimeCount;
+
+    public bool canRoll { get; private set;}
     private IEnumerator ra;
 
     private enum AnimState {idle, running, jumping}
@@ -88,13 +90,15 @@ public class Player_Movement : MonoBehaviour
             }
         }
 
-        if (playerRoll.WasPressedThisFrame())
+        if (playerRoll.WasPressedThisFrame() && IsGrounded())
         {
             canRoll = true;
+            rollTimeCount = rollTime;
         }
         else
         {
             canRoll = false;
+            rollTimeCount -= Time.deltaTime;
         }
 
         //SPRITE DIRECTION
@@ -104,7 +108,7 @@ public class Player_Movement : MonoBehaviour
             {
                 spriteRenderer.flipX = true;
             }
-            else if (moveDir.x > 0f)
+            else 
             {
                 spriteRenderer.flipX = false;
             }
@@ -150,6 +154,17 @@ public class Player_Movement : MonoBehaviour
             coyoteTime = .2f;
         }
         
+        if (rollTimeCount > 0)
+        {
+            if (moveDir.x < 0f)
+            {
+                rb.AddForce(Vector2.left * rollForce, ForceMode2D.Impulse);
+            }
+            else 
+            {
+                rb.AddForce(Vector2.right * rollForce, ForceMode2D.Impulse);
+            }
+        }
     }
 
     private bool IsGrounded()

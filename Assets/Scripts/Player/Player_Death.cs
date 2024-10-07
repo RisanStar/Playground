@@ -13,7 +13,7 @@ public class Player_Death : MonoBehaviour
     [Header("Health")]
     [SerializeField] private float pHp;
     private bool beingHit;
-    private IEnumerator bh;
+    private IEnumerator gh;
     private IEnumerator ha;
     private bool hasIFrames;
     [SerializeField] private float iFrames;
@@ -37,7 +37,7 @@ public class Player_Death : MonoBehaviour
 
     private void Update()
     {
-        bh = GettingHit();
+        gh = GettingHit();
         ha = HitAnim();
 
         if (transform.position.y < -5)
@@ -47,12 +47,12 @@ public class Player_Death : MonoBehaviour
 
         if (beingHit)
         {
-            StartCoroutine(bh);
+            StartCoroutine(gh);
         }
         
         if (!beingHit && !hasIFrames)
         {
-            StopCoroutine(bh);
+            StopCoroutine(gh);
         }
 
         if (hitCount >= pHp)

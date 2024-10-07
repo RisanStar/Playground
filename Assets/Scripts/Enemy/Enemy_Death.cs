@@ -46,7 +46,6 @@ public class Enemy_Death : MonoBehaviour
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Death");
         deathIsDone = true;
-
     }
 
     private void UpdateHealthAnimation()

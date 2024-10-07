@@ -24,6 +24,7 @@ public class Player_Attack: MonoBehaviour
     private IEnumerator sa2;
     private IEnumerator sa3;
     [SerializeField] private float swingTime;
+    private bool canAttack;
     private bool canAttackAgain;
     private bool inRange;
     [SerializeField] private GameObject enemy;
@@ -63,12 +64,26 @@ public class Player_Attack: MonoBehaviour
     }
     private void Update()
     {
-        if (playerAttack.WasPressedThisFrame() && canAttackAgain)
+        //RANGE
+        if (attackRange <= 1.2f)
+        {
+            inRange = true;
+        }
+        else
+        {
+            inRange = false;
+        }
+
+        if (canAttack)
         {
             if (inRange)
             {
                 pKnockBack = true;
                 eDamage = true;
+            }
+            else
+            {
+                eDamage = false;
             }
         }
         else
@@ -93,16 +108,6 @@ public class Player_Attack: MonoBehaviour
         Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
         Debug.Log("Player is in range: " + inRange);
         //Debug.Log(inRange);
-
-        //RANGE
-        if (attackRange <= 1.2f)
-        {
-            inRange = true;
-        }
-        else
-        {
-            inRange = false;
-        }
 
         if (pKnockBack)
         {
@@ -131,9 +136,8 @@ public class Player_Attack: MonoBehaviour
         }
         else
         {
-            return;
+            attackRange = hit.point.x - transform.position.x;
         }
-        
 
         if (pKnockBack)
         {
@@ -152,9 +156,11 @@ public class Player_Attack: MonoBehaviour
     {
         pAttack2 = false;
         pAttack3 = false;
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttackAgain);
+        canAttack = true;
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttack || canAttackAgain);
         anim.SetTrigger("Attack1");
         pAttack1 = false;
+        canAttack = false;
         canAttackAgain = false;
         yield return new WaitForSeconds(swingTime);
         pAttack2 = true;
@@ -165,9 +171,11 @@ public class Player_Attack: MonoBehaviour
 
     private IEnumerator SwingAnim2()
     {
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        canAttack = true;
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttack);
         anim.SetTrigger("Attack2");
         pAttack2 = false;
+        canAttack = false;
         yield return new WaitForSeconds(swingTime);
         pAttack3 = true;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
@@ -176,9 +184,11 @@ public class Player_Attack: MonoBehaviour
 
     private IEnumerator SwingAnim3()
     {
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        canAttack = true;
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttack);
         anim.SetTrigger("Attack3");
         pAttack3 = false;
+        canAttack = false;
         yield return new WaitForSeconds(swingTime);
         pAttack1 = true;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
