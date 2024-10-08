@@ -18,7 +18,9 @@ public class Enemy_Attack : MonoBehaviour
     private IEnumerator a1;
     private IEnumerator a2;
     [SerializeField] private float swingTime;
+    public bool isAttacking { get; private set; }
     private bool canAttack;
+    private bool canAttackAgain;
     private bool inRange;
     private bool eAttack1;
     private bool eAttack2;
@@ -34,7 +36,7 @@ public class Enemy_Attack : MonoBehaviour
         a2 = Attack2();
 
         //RANGE
-        if (attackRange <= 2)
+        if (attackRange <= 2.1)
         {
             inRange = true;
         }
@@ -66,12 +68,14 @@ public class Enemy_Attack : MonoBehaviour
     {
         eAttack2 = false;
         canAttack = true;
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttack);
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f && canAttack || canAttackAgain);
         anim.SetTrigger("Attack1");
         eAttack1 = false;
         canAttack = false;
+        canAttackAgain = false;
         yield return new WaitForSeconds(swingTime);
         eAttack2 = true;
+        canAttackAgain = true;
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Attack1");
     }
@@ -92,8 +96,9 @@ public class Enemy_Attack : MonoBehaviour
     {
         if (!eneDeath.eIsDead)
         {
-            if (inRange && !eneMove.moving)
+            if (inRange)
             {
+                isAttacking = true;
                 if (eAttack1)
                 {
                     StartCoroutine(a1);
@@ -112,6 +117,7 @@ public class Enemy_Attack : MonoBehaviour
                     StopCoroutine(a2);
                 }
             }
+            isAttacking = false;
         }
 
     }
