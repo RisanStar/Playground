@@ -1747,6 +1747,7 @@ GameObject:
   - component: {fileID: 1609639161}
   - component: {fileID: 1609639162}
   - component: {fileID: 1609639163}
+  - component: {fileID: 1609639164}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -1818,6 +1819,27 @@ MonoBehaviour:
   hitbox: {fileID: 1837383676}
   playerAttack: {fileID: 728634016}
   eHp: 3
+--- !u!114 &1609639164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609639157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c197a6d1aeba24e854cc067197e488, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 600505963}
+  anim: {fileID: 600505965}
+  eneMove: {fileID: 1609639162}
+  eneDeath: {fileID: 1609639163}
+  playerDeath: {fileID: 728634015}
+  ignoreCol:
+    serializedVersion: 2
+    m_Bits: 8
+  swingTime: 1.5
 --- !u!1 &1722087515
 GameObject:
   m_ObjectHideFlags: 0

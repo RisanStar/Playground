@@ -14,7 +14,7 @@ public class Enemy_Movement : MonoBehaviour
 
     [Header("Walking & Running")]
     [SerializeField] private float speed;
-    private bool moving;
+    public bool moving { get; private set; }
 
     [Header("Jumping")]
     [SerializeField] private LayerMask ground;
@@ -81,10 +81,14 @@ public class Enemy_Movement : MonoBehaviour
             if (InRange())
             {
                 //PLAYER-FOLLOW
-                if (Vector2.Distance(transform.position, pGo.transform.position) > 0)
+                if (Vector2.Distance(transform.position, pGo.transform.position) > 2)
                 {
                     transform.position = Vector2.MoveTowards(transform.position, new Vector2(pGo.transform.position.x, transform.position.y), speed * Time.deltaTime);
                     moving = true;
+                }
+                else
+                {
+                    moving = false;
                 }
             }
             else
