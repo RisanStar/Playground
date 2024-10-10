@@ -1745,6 +1745,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1609639161}
+  - component: {fileID: 1609639165}
   - component: {fileID: 1609639162}
   - component: {fileID: 1609639163}
   - component: {fileID: 1609639164}
@@ -1793,6 +1794,7 @@ MonoBehaviour:
   playerMove: {fileID: 728634012}
   pAttack: {fileID: 728634016}
   eneDeath: {fileID: 1609639163}
+  eneAttack: {fileID: 0}
   speed: 1.5
   ground:
     serializedVersion: 2
@@ -1839,7 +1841,29 @@ MonoBehaviour:
   ignoreCol:
     serializedVersion: 2
     m_Bits: 8
-  swingTime: 1.5
+  swingTime: 5
+--- !u!195 &1609639165
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609639157}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1722087515
 GameObject:
   m_ObjectHideFlags: 0

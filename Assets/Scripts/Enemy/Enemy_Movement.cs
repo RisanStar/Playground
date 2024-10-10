@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using Pathfinding;
 public class Enemy_Movement : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D pRb;
@@ -8,6 +8,7 @@ public class Enemy_Movement : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Collider2D hitbox;
 
+    [SerializeField] private AIPath aiPath;
     [SerializeField] private Player_Movement playerMove;
     [SerializeField] private Player_Attack pAttack;
     [SerializeField] private Enemy_Death eneDeath;
@@ -38,7 +39,20 @@ public class Enemy_Movement : MonoBehaviour
     }
     private void Update()
     {
+        //E-RAYCAST
         Debug.DrawRay(transform.position, Vector2.left * 5, Color.red);
+        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
+        if (lefthit)
+        {
+            if (lefthit.collider.CompareTag("Player"))
+            {
+                spriteRenderer.flipX = true;
+            }
+        }
+        else
+        {
+            spriteRenderer.flipX = false;
+        }
 
         gravity += Physics.gravity * Time.deltaTime;
 
@@ -70,7 +84,7 @@ public class Enemy_Movement : MonoBehaviour
 
         UpdateMovementAnimation();
     }
-    private void FixedUpdate()
+   private void FixedUpdate()
     {
         if (!eneDeath.eIsDead)
         {
@@ -79,59 +93,18 @@ public class Enemy_Movement : MonoBehaviour
                 transform.position += gravity * Time.deltaTime;
             }
 
-            if (InRange())
-            {
-                //PLAYER-FOLLOW
-                if (Vector2.Distance(transform.position, pGo.transform.position) > 2)
-                {
-                    transform.position = Vector2.MoveTowards(transform.position, new Vector2(pGo.transform.position.x, transform.position.y), speed * Time.deltaTime);
-                    moving = true;
-                }
-                else
-                {
-                    moving = false;
-                }
-            }
-            else
-            {
-                moving = false;
-            }
-
-            //E-RAYCAST
-            RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
-
-
-            if (lefthit)
-            {
-                if (lefthit.collider.CompareTag("Player"))
-                {
-                    spriteRenderer.flipX = true;
-                }
-            }
-            else
-            {
-                spriteRenderer.flipX = false;
-            }
-
-
-
             if (eKnockBack)
             {
 
             }
         }
-
-    }
-
-    private bool InRange()
-    {
-        return Physics2D.OverlapCircle(transform.position, 5f, 7);
     }
 
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, .05f, ground);
     }
+
 
     private void UpdateMovementAnimation()
     {
@@ -146,7 +119,7 @@ public class Enemy_Movement : MonoBehaviour
             }
 
             //RUN & IDLE ANIM
-            if (moving && IsGrounded())
+            if (!aiPath.reachedEndOfPath)
             {
                 state = AnimState.running;
             }
