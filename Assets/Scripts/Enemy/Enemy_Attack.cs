@@ -24,6 +24,7 @@ public class Enemy_Attack : MonoBehaviour
     private bool inRange;
     private bool eAttack1;
     private bool eAttack2;
+    private float attackBuffTime;
 
     void Start()
     {
@@ -44,6 +45,17 @@ public class Enemy_Attack : MonoBehaviour
         {
             inRange = false;
         }
+
+        if (eAttack2)
+        {
+            attackBuffTime -= Time.deltaTime;
+            if (attackBuffTime <= 0)
+            {
+                attackBuffTime = 0;
+                eAttack1 = true;
+            }
+        }
+
 
         UpdateAttackAnimation();
     }
