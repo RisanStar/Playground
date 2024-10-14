@@ -9,24 +9,25 @@ public class IgnorePlayerCollision : MonoBehaviour
 
     [SerializeField] private Player_Movement playerMove;
     [SerializeField] private float pIFrames;
-    private float pIFramesCount;
+    public float pIFramesCount {get; private set;}
 
     private void FixedUpdate()
     {
-        if (playerMove.canRoll)
+        if (playerMove.rollTimeCount > 0)
         {
             pIFramesCount = pIFrames;
-            Physics2D.IgnoreLayerCollision(3, 2);
+            Physics2D.IgnoreLayerCollision(3, 2, true);
         }
         else
         {
-            pIFramesCount -= Time.deltaTime;
+            pIFramesCount -= Time.fixedDeltaTime;
+            Debug.Log("The iframes count is:" +  pIFramesCount);
         }
 
         if (pIFramesCount <= 0) { pIFramesCount = 0; }
         if (pIFramesCount == 0)
         {
-
+            Physics2D.IgnoreLayerCollision(3, 2, false);
         }
     }
 }

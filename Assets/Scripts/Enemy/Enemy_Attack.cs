@@ -17,47 +17,51 @@ public class Enemy_Attack : MonoBehaviour
 
     [Header("Attacking")]
     private float attackRange;
-    private IEnumerator a;
+    private IEnumerator a1;
+    private IEnumerator a2;
     [SerializeField] private float swingTime;
     public bool isAttacking { get; private set; }
     private bool inRange;
     private bool canAttack;
+    private bool canAttackAgain;
+    private bool eAttack1;
+    private bool eAttack2;
 
 
-    void Update()
+    private void Update()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
-        if (hit)
+        a1 = Attack1();
+
+        Debug.DrawRay(transform.position, Vector3.right * 2, Color.black);
+
+        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 2f, ~ignoreCol);
+        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 2f, ~ignoreCol);
+        if (lefthit || righthit)
         {
-            if (hit.collider.CompareTag("Player"))
+            if (lefthit.collider.CompareTag("Player") || righthit.collider.CompareTag("Player"))
             {
-;
+                UpdateAttackAnimation();
             }
         }
         else
         {
-
+            return;
         }
     }
 
-    public virtual void OnTargetReached()
+    private IEnumerator Attack1()
     {
-        if (aIPath.reachedEndOfPath)
-        {
-            UpdateAttackAnimation();
-        }
-        else
-        { 
-
-        }
+        yield return new WaitUntil(() => anim.GetNextAnimatorStateInfo(0).normalizedTime == 0f);
+        anim.SetTrigger("Attack1");
+        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
+        anim.ResetTrigger("Attack1");
     }
 
     private void UpdateAttackAnimation()
     {
         if (!eneDeath.eIsDead)
         {
-            anim.SetTrigger("Attack1");
- 
+            StartCoroutine(a1);
         }
 
     }

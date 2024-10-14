@@ -7,6 +7,8 @@ public class Player_Death : MonoBehaviour
     [SerializeField] private CapsuleCollider2D cCollider;
     [SerializeField] private Animator anim;
 
+    [SerializeField] private IgnorePlayerCollision iPC;
+
     [SerializeField] private LayerMask ignoreCol;
     private Vector2 bluePos;
 
@@ -71,17 +73,21 @@ public class Player_Death : MonoBehaviour
 
     private void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, .5f, ~ignoreCol);
-        if (hit)
+        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, .5f, ~ignoreCol);
+        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, .5f, ~ignoreCol);
+        if (lefthit || righthit)
         {
-            if (hit.collider.CompareTag("Enemy"))
+            if (iPC.pIFramesCount <= 0)
             {
-                beingHit = true;
+                if (lefthit.collider.CompareTag("Enemy") || righthit.collider.CompareTag("Enemy"))
+                {
+                    beingHit = true;
+                }
             }
-        }
-        else
-        {
-            beingHit = false;
+            else
+            {
+                beingHit = false;
+            }
         }
     }
 

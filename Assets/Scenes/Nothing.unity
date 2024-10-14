@@ -219,8 +219,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.007027924, y: -0.2456814}
-  m_Size: {x: 0.7329391, y: 1.408637}
+  m_Offset: {x: -0.017974079, y: -0.27144712}
+  m_Size: {x: 0.6536411, y: 1.1916596}
   m_Direction: 0
 --- !u!1 &125350015
 GameObject:
@@ -1023,7 +1023,7 @@ MonoBehaviour:
   coyoteTime: 0.2
   jumpBuffTime: 0.4
   rollForce: 3
-  rollTime: 0.2
+  rollTime: 0.4
 --- !u!114 &728634013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095,6 +1095,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cCollider: {fileID: 57412571}
   anim: {fileID: 360653377}
+  iPC: {fileID: 1837383677}
   ignoreCol:
     serializedVersion: 2
     m_Bits: 4
@@ -1884,7 +1885,6 @@ MonoBehaviour:
   pAttack: {fileID: 728634016}
   eneDeath: {fileID: 1609639163}
   eneAttack: {fileID: 1609639164}
-  speed: 1.5
   ground:
     serializedVersion: 2
     m_Bits: 64
@@ -1930,7 +1930,7 @@ MonoBehaviour:
   ignoreCol:
     serializedVersion: 2
     m_Bits: 8
-  swingTime: 5
+  swingTime: 0.4
 --- !u!114 &1609639165
 MonoBehaviour:
   m_ObjectHideFlags: 0

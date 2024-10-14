@@ -38,9 +38,9 @@ public class Player_Movement : MonoBehaviour
     [Header("Rolling")]
     [SerializeField] private float rollForce;
     [SerializeField] private float rollTime;
-    private float rollTimeCount;
+    public float rollTimeCount { get; private set; }
 
-    public bool canRoll { get; private set;}
+    private bool canRoll;
     private IEnumerator ra;
 
     private enum AnimState {idle, running, jumping}

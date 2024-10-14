@@ -23,7 +23,7 @@ public class Enemy_Death : MonoBehaviour
     {
         d = Death();
 
-        Debug.Log(playerAttack.eDamage);
+        //Debug.Log(playerAttack.eDamage);
 
         if (playerAttack.eDamage)
         {
@@ -36,7 +36,7 @@ public class Enemy_Death : MonoBehaviour
             hitbox.enabled = false;
         }
 
-        Debug.Log("The death anim is finsihed:  " + deathIsDone);
+        //Debug.Log("The death anim is finsihed:  " + deathIsDone);
         UpdateHealthAnimation();
     }
 

@@ -11,9 +11,6 @@ public class Enemy_Movement : MonoBehaviour
     [SerializeField] private Player_Attack pAttack;
     [SerializeField] private Enemy_Death eneDeath;
     [SerializeField] private Enemy_Attack eneAttack;
-
-    [Header("Walking & Running")]
-    [SerializeField] private float speed;
     public bool moving { get; private set; }
 
     [Header("Jumping")]

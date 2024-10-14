@@ -19,7 +19,8 @@ public class Player_Attack: MonoBehaviour
     [SerializeField] private LayerMask ignoreCol;
 
     [Header("Attacking")]
-    private float attackRange;
+    private float lAttackRange;
+    private float rAttackRange;
     private IEnumerator sa1;
     private IEnumerator sa2;
     private IEnumerator sa3;
@@ -65,7 +66,7 @@ public class Player_Attack: MonoBehaviour
     private void Update()
     {
         //RANGE
-        if (attackRange <= 1.2f)
+        if (lAttackRange <= 1.2f || rAttackRange <= 1.2f)
         {
             inRange = true;
         }
@@ -106,7 +107,7 @@ public class Player_Attack: MonoBehaviour
         }
 
         Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
-        Debug.Log("Player is in range: " + inRange);
+        //Debug.Log("Player is in range: " + inRange);
         //Debug.Log(inRange);
 
         if (pKnockBack)
@@ -125,18 +126,20 @@ public class Player_Attack: MonoBehaviour
 
     private void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
-        if (hit)
+        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
+        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
+        if (lefthit || righthit)
         {
-            if (hit.collider.CompareTag("Enemy"))
+            if (lefthit.collider.CompareTag("Enemy") || righthit.collider.CompareTag("Enemy"))
             {
-                attackRange = hit.point.x - transform.position.x;
-                //Debug.Log(attackRange);
+                lAttackRange = lefthit.point.x - transform.position.x;
+                rAttackRange = righthit.point.x - transform.position.x;
             }
         }
         else
         {
-            attackRange = hit.point.x - transform.position.x;
+            lAttackRange = lefthit.point.x - transform.position.x;
+            rAttackRange = righthit.point.x - transform.position.x;
         }
 
         if (pKnockBack)
