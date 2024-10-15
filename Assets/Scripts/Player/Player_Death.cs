@@ -42,6 +42,31 @@ public class Player_Death : MonoBehaviour
         gh = GettingHit();
         ha = HitAnim();
 
+        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, .5f, ~ignoreCol);
+        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, .5f, ~ignoreCol);
+        if (iPC.pIFramesCount <= 0)
+        {
+            if (lefthit)
+            {
+                if (lefthit.collider.CompareTag("Enemy"))
+                {
+                    beingHit = true;
+                }
+                else if (righthit)
+                {
+                    if (righthit.collider.CompareTag("Enemy"))
+                    {
+                        beingHit = true;
+                    }
+                }
+                else
+                {
+                    beingHit = false;
+                }
+            }
+
+        }
+
         if (transform.position.y < -5)
         {
             SceneManager.LoadScene("nothing");
@@ -69,35 +94,6 @@ public class Player_Death : MonoBehaviour
         bluePos = new Vector2(transform.position.x, transform.position.y - .1f);
         Debug.DrawRay(bluePos, Vector2.right * .5f, Color.blue);
 
-    }
-
-    private void FixedUpdate()
-    {
-        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, .5f, ~ignoreCol);
-        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, .5f, ~ignoreCol);
-        if (iPC.pIFramesCount <= 0)
-        {
-            if (lefthit)
-            {
-                if (lefthit.collider.CompareTag("Enemy"))
-                {
-                    beingHit = true;
-                }
-
-                else if (righthit)
-                {
-                    if (righthit.collider.CompareTag("Enemy"))
-                    {
-                        beingHit = true;
-                    }
-                }
-                else
-                {
-                    beingHit = false;
-                }
-            }
-
-        }
     }
 
     private IEnumerator DeathRestart()

@@ -16,21 +16,21 @@ public class Enemy_Attack : MonoBehaviour
     [SerializeField] private LayerMask ignoreCol;
 
     [Header("Attacking")]
-    private float attackRange;
-    private IEnumerator a1;
-    private IEnumerator a2;
     [SerializeField] private float swingTime;
+    private float swingTimeCount;
     public bool isAttacking { get; private set; }
-    private bool inRange;
-    private bool canAttack;
-    private bool canAttackAgain;
     private bool eAttack1;
     private bool eAttack2;
+
+    private void Start()
+    {
+        eAttack1 = true;
+        swingTimeCount = swingTime;
+    }
 
 
     private void Update()
     {
-        a1 = Attack1();
 
         Debug.DrawRay(transform.position, Vector3.right * 2, Color.black);
 
@@ -56,20 +56,34 @@ public class Enemy_Attack : MonoBehaviour
         }
     }
 
-    private IEnumerator Attack1()
-    {
-        yield return new WaitUntil(() => anim.GetNextAnimatorStateInfo(0).normalizedTime == 0f);
-        anim.SetTrigger("Attack1");
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
-        anim.ResetTrigger("Attack1");
-    }
-
     private void UpdateAttackAnimation()
     {
         if (!eneDeath.eIsDead)
         {
-            StartCoroutine(a1);
+            if (eAttack1 && anim.GetNextAnimatorStateInfo(0).normalizedTime <= 0)
+            {
+                anim.SetTrigger("Attack1");
+                eAttack1 = false;
+                if (anim.GetNextAnimatorStateInfo(0).IsName("Attack1"))
+                {
+                    anim.ResetTrigger("Attack1");
+                    eAttack2 = true;
+                }
+            }
+
+            if (eAttack2 && anim.GetNextAnimatorStateInfo(0).normalizedTime <= 0)
+            {
+                anim.SetTrigger("Attack2");
+                eAttack2 = false;
+                if (anim.GetNextAnimatorStateInfo(0).IsName("Attack2"))
+                {
+                    anim.ResetTrigger("Attack2");
+                    eAttack1 = true;
+                }
+            }
+
         }
+
 
     }
 
