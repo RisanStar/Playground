@@ -36,9 +36,16 @@ public class Enemy_Attack : MonoBehaviour
 
         RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 2f, ~ignoreCol);
         RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 2f, ~ignoreCol);
-        if (lefthit || righthit)
+        if (lefthit)
         {
-            if (lefthit.collider.CompareTag("Player") || righthit.collider.CompareTag("Player"))
+            if (lefthit.collider.CompareTag("Player"))
+            {
+                UpdateAttackAnimation();
+            }
+        }
+        else if (righthit)
+        {
+            if (righthit.collider.CompareTag("Player"))
             {
                 UpdateAttackAnimation();
             }

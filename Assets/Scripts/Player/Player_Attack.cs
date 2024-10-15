@@ -4,14 +4,18 @@ using UnityEngine.InputSystem;
 
 public class Player_Attack: MonoBehaviour
 {
+    [Header("Controls")]
     [SerializeField] private PlayerControls playerCntrls;
     [SerializeField] private InputAction playerAttack;
 
+    [Header("Assets")]
     [SerializeField] private GameObject sprite;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
+    [SerializeField] private GameObject enemy;
 
+    [Header("Scripts")]
     [SerializeField] private Player_Movement playerMove;
     [SerializeField] private Enemy_Death eneDeath;
     [SerializeField] private Player_Death playerDeath;
@@ -19,19 +23,18 @@ public class Player_Attack: MonoBehaviour
     [SerializeField] private LayerMask ignoreCol;
 
     [Header("Attacking")]
+    [SerializeField] private float swingTime;
+    [SerializeField] private float pKnockBackPower;
+    [SerializeField] private float pKnockBackCount;
     private float lAttackRange;
     private float rAttackRange;
     private IEnumerator sa1;
     private IEnumerator sa2;
     private IEnumerator sa3;
-    [SerializeField] private float swingTime;
     private bool canAttack;
     private bool canAttackAgain;
     private bool inRange;
-    [SerializeField] private GameObject enemy;
     public bool pKnockBack { get; private set; }
-    [SerializeField] private float pKnockBackPower;
-    [SerializeField] private float pKnockBackCount;
     private float pKnockBackTimer;
     private bool pAttack1;
     private bool pAttack2;
@@ -128,11 +131,17 @@ public class Player_Attack: MonoBehaviour
     {
         RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
         RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
-        if (lefthit || righthit)
+        if (lefthit)
         {
-            if (lefthit.collider.CompareTag("Enemy") || righthit.collider.CompareTag("Enemy"))
+            if (lefthit.collider.CompareTag("Enemy"))
             {
                 lAttackRange = lefthit.point.x - transform.position.x;
+            }
+        }
+        else if (righthit)
+        {
+            if (righthit.collider.CompareTag("Enemy"))
+            {
                 rAttackRange = righthit.point.x - transform.position.x;
             }
         }

@@ -75,19 +75,28 @@ public class Player_Death : MonoBehaviour
     {
         RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, .5f, ~ignoreCol);
         RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, .5f, ~ignoreCol);
-        if (lefthit || righthit)
+        if (iPC.pIFramesCount <= 0)
         {
-            if (iPC.pIFramesCount <= 0)
+            if (lefthit)
             {
-                if (lefthit.collider.CompareTag("Enemy") || righthit.collider.CompareTag("Enemy"))
+                if (lefthit.collider.CompareTag("Enemy"))
                 {
                     beingHit = true;
                 }
+
+                else if (righthit)
+                {
+                    if (righthit.collider.CompareTag("Enemy"))
+                    {
+                        beingHit = true;
+                    }
+                }
+                else
+                {
+                    beingHit = false;
+                }
             }
-            else
-            {
-                beingHit = false;
-            }
+
         }
     }
 

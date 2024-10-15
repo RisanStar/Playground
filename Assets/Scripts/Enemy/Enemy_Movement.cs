@@ -34,6 +34,7 @@ public class Enemy_Movement : MonoBehaviour
         //E-RAYCAST
         Debug.DrawRay(transform.position, Vector2.left * 5, Color.red);
         RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
+        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
         if (lefthit)
         {
             if (lefthit.collider.CompareTag("Player"))
@@ -41,9 +42,16 @@ public class Enemy_Movement : MonoBehaviour
                 spriteRenderer.flipX = true;
             }
         }
+        else if (righthit)
+        {
+            if (righthit.collider.CompareTag("Player"))
+            {
+                spriteRenderer.flipX = false;
+            }
+        }
         else
         {
-            spriteRenderer.flipX = false;
+            return;
         }
 
         //gravity += Physics.gravity * Time.deltaTime;
