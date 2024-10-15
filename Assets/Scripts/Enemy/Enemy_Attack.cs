@@ -19,12 +19,10 @@ public class Enemy_Attack : MonoBehaviour
     [SerializeField] private float swingTime;
     private float swingTimeCount;
     public bool isAttacking { get; private set; }
-    private bool eAttack1;
-    private bool eAttack2;
+    private float attackCount = 0;
 
     private void Start()
     {
-        eAttack1 = true;
         swingTimeCount = swingTime;
     }
 
@@ -60,28 +58,37 @@ public class Enemy_Attack : MonoBehaviour
     {
         if (!eneDeath.eIsDead)
         {
-            if (eAttack1 && anim.GetNextAnimatorStateInfo(0).normalizedTime <= 0)
+            if (attackCount <= 0 && anim.GetNextAnimatorStateInfo(0).normalizedTime <= 0)
             {
                 anim.SetTrigger("Attack1");
-                eAttack1 = false;
-                if (anim.GetNextAnimatorStateInfo(0).IsName("Attack1"))
+                attackCount++;
+                if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
                 {
                     anim.ResetTrigger("Attack1");
-                    eAttack2 = true;
                 }
             }
-
-            if (eAttack2 && anim.GetNextAnimatorStateInfo(0).normalizedTime <= 0)
+            else if (attackCount > 0 && attackCount < 2 && anim.GetNextAnimatorStateInfo(0).normalizedTime <= 0)
             {
-                anim.SetTrigger("Attack2");
-                eAttack2 = false;
-                if (anim.GetNextAnimatorStateInfo(0).IsName("Attack2"))
+                if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
                 {
-                    anim.ResetTrigger("Attack2");
-                    eAttack1 = true;
+                    anim.SetTrigger("Attack2");
+                    attackCount++;
+                    if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+                    {
+                        anim.ResetTrigger("Attack2");
+                    }
                 }
             }
-
+            
+            if(!anim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            {
+                swingTimeCount -= Time.deltaTime;
+                if (swingTimeCount <= 0) { swingTimeCount = 0; }
+                if (swingTimeCount == 0)
+                {
+                    attackCount = 0;
+                }
+            }
         }
 
 
