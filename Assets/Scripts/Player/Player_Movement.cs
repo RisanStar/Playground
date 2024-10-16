@@ -4,16 +4,18 @@ using UnityEngine.InputSystem;
 
 public class Player_Movement : MonoBehaviour
 {
+    [Header("Controls")]
     [SerializeField] private PlayerControls playerCntrls;
     [SerializeField] private InputAction playerMovement;
     [SerializeField] private InputAction playerJump;
     [SerializeField] private InputAction playerRoll;
 
-    [SerializeField] private GameObject sprite;
+    [Header("Assets")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
 
+    [Header("Scripts")]
     [SerializeField] private Player_Attack attackScript;
     [SerializeField] private Player_Death deathScript;
 
@@ -38,10 +40,13 @@ public class Player_Movement : MonoBehaviour
     [Header("Rolling")]
     [SerializeField] private float rollForce;
     [SerializeField] private float rollTime;
+    private float rollForceTime = .4f;
     public float rollTimeCount { get; private set; }
-
     private bool canRoll;
     private IEnumerator ra;
+
+    [Header("Climbing")]
+    private bool canWallClimb;
 
     private enum AnimState {idle, running, jumping}
     private void Awake()
@@ -70,6 +75,8 @@ public class Player_Movement : MonoBehaviour
     private void Start()
     {
         canLandTimer = canLandCount;
+        rollForceTime = 0;
+        canWallClimb = false;
     }
 
     private void Update()
@@ -90,15 +97,17 @@ public class Player_Movement : MonoBehaviour
             }
         }
 
-        if (playerRoll.WasPressedThisFrame() && IsGrounded())
+        if (playerRoll.WasPressedThisFrame() && IsGrounded() && rollTimeCount <= 0)
         {
             canRoll = true;
             rollTimeCount = rollTime;
+            rollForceTime = .4f;
         }
         else
         {
             canRoll = false;
             rollTimeCount -= Time.deltaTime;
+            rollForceTime -= Time.deltaTime;
         }
 
         //SPRITE DIRECTION
@@ -120,7 +129,7 @@ public class Player_Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //WALKING & RUNNING
+        //WALKING & RUNNING PHYS
         moveDir = playerMovement.ReadValue<Vector2>();
 
         if (!attackScript.pKnockBack && !deathScript.pIsDead && !canRoll)
@@ -133,14 +142,14 @@ public class Player_Movement : MonoBehaviour
             }
         }
 
-        //JUMPING
+        //JUMPING PHYS
         if (jumpBuffTime > 0f && coyoteTime > 0f && !canRoll)
         {
            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
 
-        //COYOTE & LANDING
-        if (!IsGrounded())
+        //COYOTE & LANDING PHYS
+        if (!IsGrounded() && !canWallClimb)
         {
             coyoteTime -= Time.deltaTime;
             if (rb.velocity.y > 0f)
@@ -154,7 +163,8 @@ public class Player_Movement : MonoBehaviour
             coyoteTime = .2f;
         }
         
-        if (rollTimeCount > 0)
+        //ROLLING PHYS
+        if (rollForceTime > 0)
         {
             if (moveDir.x < 0f)
             {
@@ -164,6 +174,24 @@ public class Player_Movement : MonoBehaviour
             {
                 rb.AddForce(Vector2.right * rollForce, ForceMode2D.Impulse);
             }
+        }
+
+        //CLIMBING PHYS
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ledge"))
+        {
+            canWallClimb = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ledge"))
+        {
+            canWallClimb = false;
         }
     }
 
@@ -185,10 +213,14 @@ public class Player_Movement : MonoBehaviour
         {
             AnimState state;
             //LAND ANIM
-            if (IsGrounded())
+            if (IsGrounded() && !canWallClimb)
             {
                 anim.SetBool("Grounded", true);
                 anim.SetBool("canLand", false);
+            }
+            else
+            {
+                anim.SetFloat("AirSpeedY", -.1f);
             }
 
             //RUN & IDLE ANIM
@@ -209,6 +241,11 @@ public class Player_Movement : MonoBehaviour
             else
             {
                 StopCoroutine(ra);
+            }
+
+            if (canWallClimb)
+            {
+                anim.SetBool("WallSlide", true);
             }
 
 

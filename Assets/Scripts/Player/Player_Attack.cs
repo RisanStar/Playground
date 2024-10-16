@@ -20,6 +20,7 @@ public class Player_Attack: MonoBehaviour
     [SerializeField] private Enemy_Death eneDeath;
     [SerializeField] private Player_Death playerDeath;
 
+    [Header("Layers")]
     [SerializeField] private LayerMask ignoreCol;
 
     [Header("Attacking")]

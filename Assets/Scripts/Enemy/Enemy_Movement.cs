@@ -2,10 +2,12 @@ using UnityEngine;
 using Pathfinding;
 public class Enemy_Movement : MonoBehaviour
 {
+    [Header("Assets")]
     [SerializeField] private Rigidbody2D pRb;
     [SerializeField] private Animator anim;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    [Header("Scripts")]
     [SerializeField] private AIPath aiPath;
     [SerializeField] private Player_Movement playerMove;
     [SerializeField] private Player_Attack pAttack;
@@ -22,6 +24,7 @@ public class Enemy_Movement : MonoBehaviour
     private bool eKnockBack;
     [SerializeField] private float eKnockBackPower;
 
+    [Header("Layers")]
     public LayerMask ignoreCol;
 
     private enum AnimState { idle, running, jumping, }

@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class Enemy_Death : MonoBehaviour
 {
+    [Header("Assets")]
     [SerializeField] private Animator anim;
     [SerializeField] private Collider2D hitbox;
     [SerializeField] private Collider2D playerHB;
 
+    [Header("Scripts")]
     [SerializeField] private Player_Attack playerAttack;
 
     [Header("Health")]

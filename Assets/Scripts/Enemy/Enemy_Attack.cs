@@ -5,14 +5,17 @@ using UnityEngine;
 
 public class Enemy_Attack : MonoBehaviour
 {
+    [Header("Assets")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator anim;
 
+    [Header("Scripts")]
     [SerializeField] private AIPath aIPath;
     [SerializeField] private Enemy_Movement eneMove;
     [SerializeField] private Enemy_Death eneDeath;
     [SerializeField] private Player_Death playerDeath;
 
+    [Header("Layers")]
     [SerializeField] private LayerMask ignoreCol;
 
     [Header("Attacking")]

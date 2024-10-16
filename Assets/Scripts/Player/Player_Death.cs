@@ -4,12 +4,16 @@ using UnityEngine.SceneManagement;
 
 public class Player_Death : MonoBehaviour
 {
+    [Header("Assets")]
     [SerializeField] private CapsuleCollider2D cCollider;
     [SerializeField] private Animator anim;
 
+    [Header("Scripts")]
     [SerializeField] private IgnorePlayerCollision iPC;
 
+    [Header("Layers")]
     [SerializeField] private LayerMask ignoreCol;
+
     private Vector2 bluePos;
 
     [Header("Health")]
