@@ -47,6 +47,7 @@ public class Player_Movement : MonoBehaviour
 
     [Header("Climbing")]
     [SerializeField] private LayerMask wall;
+    [SerializeField] private Transform wallCheck;
     private bool canWallClimb;
 
     private enum AnimState {idle, running, jumping}
@@ -150,7 +151,7 @@ public class Player_Movement : MonoBehaviour
         }
 
         //COYOTE & LANDING PHYS
-        if (!IsGrounded() && !canWallClimb)
+        if (!IsGrounded() && !IsWalled())
         {
             coyoteTime -= Time.deltaTime;
             if (rb.velocity.y > 0f)
@@ -178,27 +179,9 @@ public class Player_Movement : MonoBehaviour
         }
 
         //CLIMBING PHYS
-        if (canWallClimb)
+        if (IsWalled())
         {
          
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Wall"))
-        {
-            Debug.Log("is True" + collision);
-            canWallClimb = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Wall"))
-        {
-            Debug.Log("is false" + collision);
-            canWallClimb = false;
         }
     }
 
@@ -209,7 +192,7 @@ public class Player_Movement : MonoBehaviour
 
     private bool IsWalled()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, .05f, wall);
+        return Physics2D.OverlapCircle(wallCheck.position, .05f, wall);
     }
 
     private IEnumerator RollAnim()
@@ -225,7 +208,7 @@ public class Player_Movement : MonoBehaviour
         {
             AnimState state;
             //LAND ANIM
-            if (IsGrounded() && !canWallClimb)
+            if (IsGrounded() && !IsWalled())
             {
                 anim.SetBool("Grounded", true);
                 anim.SetBool("canLand", false);
@@ -255,7 +238,7 @@ public class Player_Movement : MonoBehaviour
                 StopCoroutine(ra);
             }
 
-            if (canWallClimb)
+            if (IsWalled())
             {
                 anim.SetBool("WallSlide", true);
             }
@@ -266,7 +249,7 @@ public class Player_Movement : MonoBehaviour
 
 
             //JUMP ANIM
-            if (rb.velocity.y > 0 && !IsGrounded() && !canWallClimb)
+            if (rb.velocity.y > 0 && !IsGrounded() && !IsWalled())
             {
                 anim.SetTrigger("Jump");
                 anim.SetBool("Grounded", false);
