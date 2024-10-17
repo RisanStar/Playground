@@ -46,6 +46,7 @@ public class Player_Movement : MonoBehaviour
     private IEnumerator ra;
 
     [Header("Climbing")]
+    [SerializeField] private LayerMask wall;
     private bool canWallClimb;
 
     private enum AnimState {idle, running, jumping}
@@ -177,20 +178,26 @@ public class Player_Movement : MonoBehaviour
         }
 
         //CLIMBING PHYS
+        if (canWallClimb)
+        {
+         
+        }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Ledge"))
+        if (collision.CompareTag("Wall"))
         {
+            Debug.Log("is True" + collision);
             canWallClimb = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Ledge"))
+        if (collision.CompareTag("Wall"))
         {
+            Debug.Log("is false" + collision);
             canWallClimb = false;
         }
     }
@@ -198,6 +205,11 @@ public class Player_Movement : MonoBehaviour
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, .05f, ground);
+    }
+
+    private bool IsWalled()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, .05f, wall);
     }
 
     private IEnumerator RollAnim()
@@ -247,10 +259,14 @@ public class Player_Movement : MonoBehaviour
             {
                 anim.SetBool("WallSlide", true);
             }
+            else
+            {
+                anim.SetBool("WallSlide", false);
+            }
 
 
             //JUMP ANIM
-            if (rb.velocity.y > 0 && !IsGrounded())
+            if (rb.velocity.y > 0 && !IsGrounded() && !canWallClimb)
             {
                 anim.SetTrigger("Jump");
                 anim.SetBool("Grounded", false);
