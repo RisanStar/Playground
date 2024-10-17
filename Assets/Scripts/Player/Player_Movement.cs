@@ -48,7 +48,8 @@ public class Player_Movement : MonoBehaviour
     [Header("Climbing")]
     [SerializeField] private LayerMask wall;
     [SerializeField] private Transform wallCheck;
-    private bool canWallClimb;
+    [SerializeField] private float wallSlideSpeed;
+    private bool canWallJump;
 
     private enum AnimState {idle, running, jumping}
     private void Awake()
@@ -78,48 +79,51 @@ public class Player_Movement : MonoBehaviour
     {
         canLandTimer = canLandCount;
         rollForceTime = 0;
-        canWallClimb = false;
     }
 
     private void Update()
     {
-        ra = RollAnim();
-
-        //JUMP BUFFER
-        if (Keyboard.current.spaceKey.IsActuated(.4f) && !deathScript.pIsDead)
-        {
-            jumpBuffTime = .4f;
-        }
-        else
-        {
-            jumpBuffTime -= Time.deltaTime;
-            if (jumpBuffTime < 0)
-            {
-                jumpBuffTime = 0;
-            }
-        }
-
-        if (playerRoll.WasPressedThisFrame() && IsGrounded() && rollTimeCount <= 0)
-        {
-            canRoll = true;
-            rollTimeCount = rollTime;
-            rollForceTime = .4f;
-        }
-        else
-        {
-            canRoll = false;
-            rollTimeCount -= Time.deltaTime;
-            rollForceTime -= Time.deltaTime;
-        }
-
-        //SPRITE DIRECTION
         if (!deathScript.pIsDead)
         {
+            //WALKING & RUNNING PHYS
+            moveDir = playerMovement.ReadValue<Vector2>();
+
+            ra = RollAnim();
+
+            //JUMP BUFFER
+            if (Keyboard.current.spaceKey.IsActuated(.4f))
+            {
+                jumpBuffTime = .4f;
+            }
+            else
+            {
+                jumpBuffTime -= Time.deltaTime;
+                if (jumpBuffTime < 0)
+                {
+                    jumpBuffTime = 0;
+                }
+            }
+
+            if (playerRoll.WasPressedThisFrame() && IsGrounded() && rollTimeCount <= 0)
+            {
+                canRoll = true;
+                rollTimeCount = rollTime;
+                rollForceTime = .4f;
+            }
+            else
+            {
+                canRoll = false;
+                rollTimeCount -= Time.deltaTime;
+                rollForceTime -= Time.deltaTime;
+            }
+
+            //SPRITE DIRECTION
             if (moveDir.x < 0f)
             {
                 spriteRenderer.flipX = true;
             }
-            else 
+
+            if (moveDir.x > 0f)
             {
                 spriteRenderer.flipX = false;
             }
@@ -131,9 +135,6 @@ public class Player_Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //WALKING & RUNNING PHYS
-        moveDir = playerMovement.ReadValue<Vector2>();
-
         if (!attackScript.pKnockBack && !deathScript.pIsDead && !canRoll)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
@@ -151,7 +152,7 @@ public class Player_Movement : MonoBehaviour
         }
 
         //COYOTE & LANDING PHYS
-        if (!IsGrounded() && !IsWalled())
+        if (!IsGrounded())
         {
             coyoteTime -= Time.deltaTime;
             if (rb.velocity.y > 0f)
@@ -181,7 +182,12 @@ public class Player_Movement : MonoBehaviour
         //CLIMBING PHYS
         if (IsWalled())
         {
-         
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlideSpeed, float.MaxValue));
+            canWallJump = true;
+        }
+        else
+        {
+            canWallJump = false;
         }
     }
 
@@ -192,7 +198,7 @@ public class Player_Movement : MonoBehaviour
 
     private bool IsWalled()
     {
-        return Physics2D.OverlapCircle(wallCheck.position, .05f, wall);
+        return Physics2D.OverlapCircle(wallCheck.position, .5f, wall);
     }
 
     private IEnumerator RollAnim()
@@ -208,24 +214,31 @@ public class Player_Movement : MonoBehaviour
         {
             AnimState state;
             //LAND ANIM
-            if (IsGrounded() && !IsWalled())
+            if (rb.velocity.y == 0)
             {
                 anim.SetBool("Grounded", true);
                 anim.SetBool("canLand", false);
             }
             else
             {
+                anim.SetBool("Grounded", false);
+                anim.SetBool("canLand", true);
                 anim.SetFloat("AirSpeedY", -.1f);
             }
 
             //RUN & IDLE ANIM
-            if (rb.velocity.x > 0f || rb.velocity.x < 0f && IsGrounded())
+            if (!IsWalled())
             {
-                state = AnimState.running;
-            }
-            else
-            {
-                state = AnimState.idle;
+                if (rb.velocity.x > 0f || rb.velocity.x < 0f)
+                {
+                    state = AnimState.running;
+                }
+                else
+                {
+                    state = AnimState.idle;
+                }
+
+                anim.SetInteger("AnimState", (int)state);
             }
 
             //ROLL ANIM
@@ -238,7 +251,7 @@ public class Player_Movement : MonoBehaviour
                 StopCoroutine(ra);
             }
 
-            if (IsWalled())
+            if (IsWalled() && rb.velocity.x != 0 )
             {
                 anim.SetBool("WallSlide", true);
             }
@@ -249,10 +262,9 @@ public class Player_Movement : MonoBehaviour
 
 
             //JUMP ANIM
-            if (rb.velocity.y > 0 && !IsGrounded() && !IsWalled())
+            if (rb.velocity.y > 0 && !IsWalled())
             {
                 anim.SetTrigger("Jump");
-                anim.SetBool("Grounded", false);
                 canLandTimer -= 1 * Time.deltaTime;
                 if (canLandTimer <= 0) { canLandTimer = 0; }
                 if (canLandTimer == 0)
@@ -260,8 +272,6 @@ public class Player_Movement : MonoBehaviour
                     anim.SetBool("canLand", true);
                 }
             }
-
-            anim.SetInteger("AnimState", (int)state);
         }
     }
 }
