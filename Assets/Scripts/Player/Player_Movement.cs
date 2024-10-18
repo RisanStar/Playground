@@ -49,6 +49,7 @@ public class Player_Movement : MonoBehaviour
     [SerializeField] private LayerMask wall;
     [SerializeField] private Transform wallCheck;
     [SerializeField] private float wallSlideSpeed;
+    private bool isSliding;
     private bool canWallJump;
 
     private enum AnimState {idle, running, jumping}
@@ -91,7 +92,7 @@ public class Player_Movement : MonoBehaviour
             ra = RollAnim();
 
             //JUMP BUFFER
-            if (Keyboard.current.spaceKey.IsActuated(.4f))
+            if (Keyboard.current.spaceKey.IsActuated(.4f) && !IsWalled())
             {
                 jumpBuffTime = .4f;
             }
@@ -104,6 +105,19 @@ public class Player_Movement : MonoBehaviour
                 }
             }
 
+            //WALL JUMP
+            if (Keyboard.current.spaceKey.IsPressed(.4f) && IsWalled())
+            {
+                canWallJump = true;
+                isSliding = false;
+            }
+            else
+            {
+                canWallJump = false;
+                isSliding = true;
+            }
+
+            //ROLL BUFFER
             if (playerRoll.WasPressedThisFrame() && IsGrounded() && rollTimeCount <= 0)
             {
                 canRoll = true;
@@ -135,6 +149,7 @@ public class Player_Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //WALKING & RUNNING PHYS
         if (!attackScript.pKnockBack && !deathScript.pIsDead && !canRoll)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
@@ -149,6 +164,23 @@ public class Player_Movement : MonoBehaviour
         if (jumpBuffTime > 0f && coyoteTime > 0f && !canRoll)
         {
            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+
+        //WALL JUMPING PHYS
+        if (canWallJump)
+        {
+            var rDiagonal = (Vector2.up * Vector2.right).normalized;
+            var lDiagonal = (Vector2.up * Vector2.left).normalized;
+
+            if(moveDir.x < 0f)
+            {
+                rb.AddForce(lDiagonal * jumpForce, ForceMode2D.Impulse);
+            }
+
+            if (moveDir.x < 0f)
+            {
+                rb.AddForce(rDiagonal * jumpForce, ForceMode2D.Impulse);
+            }
         }
 
         //COYOTE & LANDING PHYS
@@ -173,7 +205,8 @@ public class Player_Movement : MonoBehaviour
             {
                 rb.AddForce(Vector2.left * rollForce, ForceMode2D.Impulse);
             }
-            else 
+            
+            if (moveDir.x > 0f)
             {
                 rb.AddForce(Vector2.right * rollForce, ForceMode2D.Impulse);
             }
@@ -182,12 +215,10 @@ public class Player_Movement : MonoBehaviour
         //CLIMBING PHYS
         if (IsWalled())
         {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlideSpeed, float.MaxValue));
-            canWallJump = true;
-        }
-        else
-        {
-            canWallJump = false;
+            if (isSliding)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlideSpeed, float.MaxValue));
+            }
         }
     }
 
@@ -213,6 +244,7 @@ public class Player_Movement : MonoBehaviour
         if (!deathScript.pIsDead)
         {
             AnimState state;
+
             //LAND ANIM
             if (rb.velocity.y == 0)
             {
