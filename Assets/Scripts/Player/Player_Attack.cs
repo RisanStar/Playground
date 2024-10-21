@@ -17,7 +17,7 @@ public class Player_Attack: MonoBehaviour
 
     [Header("Scripts")]
     [SerializeField] private Player_Movement playerMove;
-    [SerializeField] private Enemy_Death eneDeath;
+    [SerializeField] private Bandit_Death banDeath;
     [SerializeField] private Player_Death playerDeath;
 
     [Header("Layers")]

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy_Death : MonoBehaviour
+public class Bandit_Death : MonoBehaviour
 {
     [Header("Assets")]
     [SerializeField] private Animator anim;

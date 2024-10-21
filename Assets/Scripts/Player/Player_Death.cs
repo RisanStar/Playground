@@ -43,8 +43,7 @@ public class Player_Death : MonoBehaviour
 
     private void Update()
     {
-        gh = GettingHit();
-        ha = HitAnim();
+        //ha = HurtAnim();
 
         RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, .5f, ~ignoreCol);
         RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, .5f, ~ignoreCol);
@@ -71,19 +70,9 @@ public class Player_Death : MonoBehaviour
 
         }
 
-        if (transform.position.y < -5)
+        if (transform.position.y < -8)
         {
             SceneManager.LoadScene("nothing");
-        }
-
-        if (beingHit)
-        {
-            StartCoroutine(gh);
-        }
-        
-        if (!beingHit && !hasIFrames)
-        {
-            StopCoroutine(gh);
         }
 
         if (hitCount >= pHp)
@@ -115,29 +104,13 @@ public class Player_Death : MonoBehaviour
         SceneManager.LoadScene("nothing");
     }
 
-    private IEnumerator GettingHit()
-    {
-        yield return new WaitUntil(() => !hasIFrames);
-        hitCoolDown -= 1 * Time.deltaTime;
-
-        if (hitCoolDown < 0) { hitCoolDown = 0; }
-
-        if (hitCoolDown <= 0)
-        {
-            hitCoolDown = hitCD;
-            hasIFrames = true;
-            hitCount++;
-            yield return new WaitForSeconds(iFrames);
-            hasIFrames = false;
-        }
-    }
-
-    private IEnumerator HitAnim()
+   /* private IEnumerator HurtAnim()
     {
         anim.SetTrigger("Hurt");
         yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f);
         anim.ResetTrigger("Hurt");
     }
+   */
 
     private void UpdateHealthAnimation()
     {

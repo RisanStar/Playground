@@ -10,7 +10,7 @@ public class IgnorePlayerCollision : MonoBehaviour
 
     [Header("Scripts")]
     [SerializeField] private Player_Movement playerMove;
-    [SerializeField] private Enemy_Death eneDeath;
+    [SerializeField] private Bandit_Death banDeath;
 
     [Header("I-Frames")]
     [SerializeField] private float pIFrames;
@@ -18,7 +18,7 @@ public class IgnorePlayerCollision : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!eneDeath.eIsDead)
+        if (!banDeath.eIsDead)
         {
 
             if (playerMove.rollTimeCount > 0)

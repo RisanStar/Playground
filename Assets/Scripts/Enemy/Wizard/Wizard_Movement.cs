@@ -1,6 +1,6 @@
 using UnityEngine;
 using Pathfinding;
-public class Enemy_Movement : MonoBehaviour
+public class Wizard_Movement : MonoBehaviour
 {
     [Header("Assets")]
     [SerializeField] private Rigidbody2D pRb;
@@ -11,8 +11,8 @@ public class Enemy_Movement : MonoBehaviour
     [SerializeField] private AIPath aiPath;
     [SerializeField] private Player_Movement playerMove;
     [SerializeField] private Player_Attack pAttack;
-    [SerializeField] private Enemy_Death eneDeath;
-    [SerializeField] private Enemy_Attack eneAttack;
+    [SerializeField] private Wizard_Death wizDeath;
+    [SerializeField] private Wizard_Attack wizAttack;
     public bool moving { get; private set; }
 
     [Header("Jumping")]
@@ -27,7 +27,7 @@ public class Enemy_Movement : MonoBehaviour
     [Header("Layers")]
     public LayerMask ignoreCol;
 
-    private enum AnimState { idle, running, jumping, }
+    private enum AnimState { idle, cIdle, running, jumping, }
     private void Start()
     {
         eKnockBack = false;
@@ -42,14 +42,14 @@ public class Enemy_Movement : MonoBehaviour
         {
             if (lefthit.collider.CompareTag("Player"))
             {
-                spriteRenderer.flipX = true;
+                spriteRenderer.flipX = false;
             }
         }
         else if (righthit)
         {
             if (righthit.collider.CompareTag("Player"))
             {
-                spriteRenderer.flipX = false;
+                spriteRenderer.flipX = true;
             }
         }
         else
@@ -73,7 +73,7 @@ public class Enemy_Movement : MonoBehaviour
     }
    private void FixedUpdate()
     {
-        if (!eneDeath.eIsDead)
+        if (!wizDeath.eIsDead)
         {
             if (!IsGrounded())
             {
@@ -96,7 +96,7 @@ public class Enemy_Movement : MonoBehaviour
     private void UpdateMovementAnimation()
     {
         //LAND ANIM
-        if (!eneDeath.eIsDead)
+        if (!wizDeath.eIsDead)
         {
             AnimState state;
 
