@@ -10,7 +10,7 @@ public class Wizard_Movement : MonoBehaviour
     [Header("Scripts")]
     [SerializeField] private AIPath aiPath;
     [SerializeField] private Player_Movement playerMove;
-    [SerializeField] private Player_Attack pAttack;
+    [SerializeField] private Player_RealAttack pRAttack;
     [SerializeField] private Wizard_Death wizDeath;
     [SerializeField] private Wizard_Attack wizAttack;
     public bool moving { get; private set; }
@@ -60,7 +60,7 @@ public class Wizard_Movement : MonoBehaviour
         //gravity += Physics.gravity * Time.deltaTime;
 
         //E-KNOCKBACK
-        if (pAttack.pKnockBack)
+        if (pRAttack.pKnockBack)
         {
             eKnockBack = true;
         }

@@ -32,6 +32,7 @@ public class Bandit_Attack : MonoBehaviour
     private void Update()
     {
         Debug.DrawRay(transform.position, Vector3.right * 2, Color.black);
+        Debug.DrawRay(transform.position, Vector3.left * 2, Color.blue);
 
         RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 2f, ~ignoreCol);
         RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 2f, ~ignoreCol);
@@ -43,18 +44,14 @@ public class Bandit_Attack : MonoBehaviour
                 inCombat = true;
             }
         }
-        else if (righthit)
+
+        if (righthit)
         {
             if (righthit.collider.CompareTag("Player"))
             {
                 UpdateAttackAnimation();
                 inCombat = true;
             }
-        }
-        else
-        {
-            inCombat = false;
-            return;
         }
     }
 

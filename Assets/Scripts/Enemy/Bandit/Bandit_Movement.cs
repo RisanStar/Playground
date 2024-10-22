@@ -10,7 +10,7 @@ public class Bandit_Movement : MonoBehaviour
     [Header("Scripts")]
     [SerializeField] private AIPath aiPath;
     [SerializeField] private Player_Movement playerMove;
-    [SerializeField] private Player_Attack pAttack;
+    [SerializeField] private Player_RealAttack pRAttack;
     [SerializeField] private Bandit_Death banDeath;
     [SerializeField] private Bandit_Attack banAttack;
     public bool moving { get; private set; }
@@ -35,7 +35,7 @@ public class Bandit_Movement : MonoBehaviour
     private void Update()
     {
         //E-RAYCAST
-        Debug.DrawRay(transform.position, Vector2.left * 5, Color.red);
+        //Debug.DrawRay(transform.position, Vector2.left * 5, Color.red);
         RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 8, ~ignoreCol);
         RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 8, ~ignoreCol);
         if (lefthit)
@@ -45,22 +45,20 @@ public class Bandit_Movement : MonoBehaviour
                 spriteRenderer.flipX = false;
             }
         }
-        else if (righthit)
+
+        if (righthit)
         {
             if (righthit.collider.CompareTag("Player"))
             {
                 spriteRenderer.flipX = true;
             }
         }
-        else
-        {
-            return;
-        }
+ 
 
         //gravity += Physics.gravity * Time.deltaTime;
 
         //E-KNOCKBACK
-        if (pAttack.pKnockBack)
+        if (pRAttack.pKnockBack)
         {
             eKnockBack = true;
         }

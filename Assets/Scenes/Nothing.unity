@@ -4973,7 +4973,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 360653378}
   rb: {fileID: 728634014}
   anim: {fileID: 360653377}
-  attackScript: {fileID: 728634016}
+  playerRAttack: {fileID: 1310568763}
   deathScript: {fileID: 728634015}
   speed: 4
   runSpeed: 6
@@ -5103,11 +5103,8 @@ MonoBehaviour:
       m_Action: Player Attack
       m_Flags: 0
     m_Flags: 0
-  sprite: {fileID: 360653375}
-  spriteRenderer: {fileID: 360653378}
   rb: {fileID: 728634014}
   anim: {fileID: 360653377}
-  enemy: {fileID: 1609639157}
   playerMove: {fileID: 728634012}
   banDeath: {fileID: 1976861048}
   playerDeath: {fileID: 728634015}
@@ -5115,8 +5112,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4
   swingTime: 0.3
-  pKnockBackPower: 0.4
-  pKnockBackCount: 0.2
 --- !u!1 &746138954
 GameObject:
   m_ObjectHideFlags: 0
@@ -8526,7 +8521,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1310568761
 Transform:
   m_ObjectHideFlags: 0
@@ -8536,7 +8531,7 @@ Transform:
   m_GameObject: {fileID: 1310568760}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: -0.75, z: 0}
+  m_LocalPosition: {x: 1, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8596,32 +8591,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1310568760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7ece9b3aa740ee4c8a4ce7b0fb712d1, type: 3}
+  m_Script: {fileID: 11500000, guid: a34960865bc1b7341bffb9f72077b0df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAttack:
-    m_Name: Player Attack
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 1e5ea80e-6bb0-4113-bf38-ccaad23aead8
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  sprite: {fileID: 0}
-  spriteRenderer: {fileID: 0}
-  rb: {fileID: 0}
-  anim: {fileID: 0}
-  enemy: {fileID: 0}
-  playerMove: {fileID: 0}
-  banDeath: {fileID: 0}
-  playerDeath: {fileID: 0}
-  ignoreCol:
-    serializedVersion: 2
-    m_Bits: 0
-  swingTime: 0
-  pKnockBackPower: 0
-  pKnockBackCount: 0
+  attackHB: {fileID: 1310568762}
+  rb: {fileID: 728634014}
+  anim: {fileID: 360653377}
+  playerMove: {fileID: 728634012}
+  playerDeath: {fileID: 728634015}
+  pKnockBackPower: 1
+  pKnockBackCount: 1
 --- !u!1 &1314938872
 GameObject:
   m_ObjectHideFlags: 0
@@ -8653,7 +8632,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAAAAIezIS1FzWwIAABEFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzqXDRyCht9YhpAcSJqSTiy+ytMYaZMmjjwDJ8N+7km3s0OkJ8d7b3berlT+JULYC5rRZGcHXmgP5MSDhTL4NOvIRjnSn1VZ8QKt5E9wVQUSj5oU6oREfhzCrS3BGsJ9qJ4N4hKBXItemXPIdJNo6i3BOpQWkjHYhWiH0OSBH/BkuQsgJT5PbcPrA02I0OOORgXJgOmkrbGW1yismaVkBD5Y78eSuUY9rmcJmGkUwzrSUwjZOiDtVsdOEVtZjHyjggmJnsXzQFyB2hQt5+8HPeW7BNZYMPd0LgwOqs5Jfup5aSe2+9vVOpQ915jfRUp1z/Q89HEc6N7p8bMuOR6GEKwTbv9ATo9b1ptqH77/69upA5Z5mEt4KUE96ZbRXHElnfAj1Fib33d9LZ0kBbN/htdUr0Ff/v5vQwzk2f0ykKLNAfb+pga3Ucdzx5sHgxfxGw3EvbJMC0eDij4VXuusvUEM8CGMdUk2XKtjLtDdBSpZxZqEb7xJtFES4MV2BotKdNpjGXd/gFdcre8U80PBUmuIN176Aq5AId/rR6Ira6MPlsmyhD2uwxbN3UijoTAfiCeeUaKXqBevPpA3bepNT1gvbecG/rhaZcnaXLSaT27txvhhNZ0M+m93eZDmbZ2w+nWYzEndPKOyTyk1ttBkP3prqkivcs/YLMlgZWsVl54YeVuKj1L2RC5XrLTMA6rnOcDEOBovgo+RLLnBAW3BOqHjf5DMlUrM98PSSKI2dLo/O0LTLkpJKvGsXkJQk8ZORkgBfdnlj4F3AIRRvk53J+S9QSwMEFAAACAgAAAAh7B8TtxVtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tJJxSrJFkqWRkbmFYZqlgbGpboqpqblJUlqyWVKymbFxkqlSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAAAAh7MhLUXNbAgAAEQUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAAAh7B8TtxVtAAAAeAAAAAkAJAAAAAAAAAAAAAAAqAIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABgAwAAAAA=
+    dataString: UEsDBBQAAAgIAAAAIey4vWsZWgIAABEFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VEtz2jAQ/iuMzk2Hd0JvrUNIDyRMSCcXX2RpjTXIkkePAMnw37uSbezQ6Ynl2293v33In0QoWwFz2qyM4GvNgfwYkGCTb4PO+QhHutNqKz6g5bwJ7opAopHzQp3QiI9CmNUlOCPYT7WTgTxE0CuRa1Mu+Q4SbZ1FOKfSArqMdiFaIfQ5IEf8uVmEkBNa49tgfaC1GA7OaDJQDkxHbYktrWZ5xSQtK+BBckeeThv2aBRpCptpGEE401IK2ygh7lTFThNaWY99IIELip3F8oFfgNgVLqjsBz/nuQXXSDL0dC8MDqjOSn7pemoltfta1zuVPtSZT6OkOuf6H/dNrTg3unxsy46GoYQrBNu/0BOj1vWm2ofvv+r26kDlnmYS3gpQT3pltFccnc74EOotjO+7v5fOkgLYvsNrqVegr/6/m9DDOTZ/TKQos+D6Pq2BrdRx3HHzYHAxv1FwvAvbpEA0qPhj4ZXu+gfUOB6EsQ5dTZcqyMu0N4FKlnFmoRvvEm0URLgRXYGi0p02mMZdb/DK1yt75Xmg4ak0xRtf+wKuQiLc8YfDK9dGHy7LsoU+rMEWz95JoaATHRxPOKdEK1UfWH8mbdjWm5yyXtjOC/71tMiEs7tsMR7f3o3yxXAyu+Gz2e00y9k8Y/PJJJuReHtCYZ9UbmqhzXhwa6pLrvDO2i/IYGVoFY+dG3pYiY9S90YuVK63zACo5zrDRTgYLIKPki+5wAFtwTmh4r7JZ0qkZnvg6SVRGjtdHp2haZclJZV41y4gKUniJyMlAb7c8sbAu4BDKN4mO5PzX1BLAwQUAAAICAAAACHsHxO3FW0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNdRUEovSizIKAaKGII4pZkpIHa0knFKskWSpZGRuYVhmqWBsaluiqmpuUlSWrJZUrKZsXGSqVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAAACHsuL1rGVoCAAARBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAACHsHxO3FW0AAAB4AAAACQAkAAAAAAAAAAAAAACnAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAF8DAAAAAA==
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -8976,7 +8955,7 @@ MonoBehaviour:
   playerHB: {fileID: 57412571}
   hitbox: {fileID: 1391797194}
   playerMove: {fileID: 728634012}
-  banDeath: {fileID: 0}
+  banDeath: {fileID: 1976861048}
   pIFrames: 0.4
 --- !u!4 &1391797196
 Transform:
@@ -9427,7 +9406,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 600505963}
   aiPath: {fileID: 1609639166}
   playerMove: {fileID: 728634012}
-  pAttack: {fileID: 728634016}
+  pRAttack: {fileID: 0}
   wizDeath: {fileID: 0}
   wizAttack: {fileID: 0}
   ground:
@@ -9453,7 +9432,7 @@ MonoBehaviour:
   anim: {fileID: 600505965}
   hitbox: {fileID: 1837383676}
   playerHB: {fileID: 57412571}
-  playerAttack: {fileID: 728634016}
+  playerRAttack: {fileID: 0}
   eHp: 3
 --- !u!114 &1609639164
 MonoBehaviour:
@@ -13016,8 +12995,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 965129795}
   hitbox: {fileID: 1391797194}
-  playerHB: {fileID: 1391797194}
-  playerAttack: {fileID: 728634016}
+  playerHB: {fileID: 57412571}
+  playerRAttack: {fileID: 1310568763}
   eHp: 3
 --- !u!114 &1976861049
 MonoBehaviour:
@@ -13058,7 +13037,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 965129797}
   aiPath: {fileID: 1976861041}
   playerMove: {fileID: 728634012}
-  pAttack: {fileID: 728634016}
+  pRAttack: {fileID: 1310568763}
   banDeath: {fileID: 1976861048}
   banAttack: {fileID: 1976861049}
   ground:

@@ -9,7 +9,7 @@ public class Wizard_Death : MonoBehaviour
     [SerializeField] private Collider2D playerHB;
 
     [Header("Scripts")]
-    [SerializeField] private Player_Attack playerAttack;
+    [SerializeField] private Player_RealAttack playerRAttack;
 
     [Header("Health")]
     [SerializeField] private float eHp;
@@ -25,7 +25,7 @@ public class Wizard_Death : MonoBehaviour
     {
         //Debug.Log(playerAttack.eDamage);
 
-        if (playerAttack.eDamage)
+        if (playerRAttack.eDamage)
         {
             eHp--;
         }

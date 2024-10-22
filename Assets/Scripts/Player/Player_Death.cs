@@ -55,16 +55,13 @@ public class Player_Death : MonoBehaviour
                 {
                     beingHit = true;
                 }
-                else if (righthit)
+            }
+
+            if (righthit)
+            {
+                if (righthit.collider.CompareTag("Enemy"))
                 {
-                    if (righthit.collider.CompareTag("Enemy"))
-                    {
-                        beingHit = true;
-                    }
-                }
-                else
-                {
-                    beingHit = false;
+                    beingHit = true;
                 }
             }
 

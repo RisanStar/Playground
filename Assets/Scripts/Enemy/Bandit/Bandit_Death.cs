@@ -9,7 +9,7 @@ public class Bandit_Death : MonoBehaviour
     [SerializeField] private Collider2D playerHB;
 
     [Header("Scripts")]
-    [SerializeField] private Player_Attack playerAttack;
+    [SerializeField] private Player_RealAttack playerRAttack;
 
     [Header("Health")]
     [SerializeField] private float eHp;
@@ -25,9 +25,14 @@ public class Bandit_Death : MonoBehaviour
     {
         //Debug.Log(playerAttack.eDamage);
 
-        if (playerAttack.eDamage)
+        if (playerRAttack.eDamage)
         {
             eHp--;
+            anim.SetTrigger("Hurt");
+            if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f)
+            {
+                anim.ResetTrigger("Hurt");
+            }
         }
     
         if (eHp <= 0)

@@ -16,7 +16,7 @@ public class Player_Movement : MonoBehaviour
     [SerializeField] private Animator anim;
 
     [Header("Scripts")]
-    [SerializeField] private Player_Attack attackScript;
+    [SerializeField] private Player_RealAttack playerRAttack;
     [SerializeField] private Player_Death deathScript;
 
     public Vector2 moveDir { get; private set; }
@@ -150,7 +150,7 @@ public class Player_Movement : MonoBehaviour
     private void FixedUpdate()
     {
         //WALKING & RUNNING PHYS
-        if (!attackScript.pKnockBack && !deathScript.pIsDead && !canRoll)
+        if (!playerRAttack.pKnockBack && !deathScript.pIsDead && !canRoll)
         {
             rb.velocity = new Vector2(moveDir.x * speed, rb.velocity.y);
 

@@ -9,11 +9,8 @@ public class Player_Attack: MonoBehaviour
     [SerializeField] private InputAction playerAttack;
 
     [Header("Assets")]
-    [SerializeField] private GameObject sprite;
-    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
-    [SerializeField] private GameObject enemy;
 
     [Header("Scripts")]
     [SerializeField] private Player_Movement playerMove;
@@ -25,24 +22,16 @@ public class Player_Attack: MonoBehaviour
 
     [Header("Attacking")]
     [SerializeField] private float swingTime;
-    [SerializeField] private float pKnockBackPower;
-    [SerializeField] private float pKnockBackCount;
-    private float lAttackRange;
-    private float rAttackRange;
     private IEnumerator sa1;
     private IEnumerator sa2;
     private IEnumerator sa3;
     private bool canAttack;
     private bool canAttackAgain;
-    private bool inRange;
-    public bool pKnockBack { get; private set; }
-    private float pKnockBackTimer;
+
     private bool pAttack1;
     private bool pAttack2;
     private bool pAttack3;
     private float attackBuffTime;
-
-    public bool eDamage {  get; private set; }
 
     private void Awake()
     {
@@ -63,39 +52,9 @@ public class Player_Attack: MonoBehaviour
     private void Start()
     {
         pAttack1 = true;
-        pKnockBackTimer = pKnockBackCount;
-
-        pKnockBack = false;
     }
     private void Update()
     {
-        //RANGE
-        if (lAttackRange <= 1.2f || rAttackRange <= 1.2f)
-        {
-            inRange = true;
-        }
-        else
-        {
-            inRange = false;
-        }
-
-        if (canAttack)
-        {
-            if (inRange)
-            {
-                pKnockBack = true;
-                eDamage = true;
-            }
-            else
-            {
-                eDamage = false;
-            }
-        }
-        else
-        {
-            eDamage = false;
-        }
-
         sa1 = SwingAnim1();
         sa2 = SwingAnim2();
         sa3 = SwingAnim3();
@@ -110,59 +69,11 @@ public class Player_Attack: MonoBehaviour
             }
         }
 
-        Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
+        //Debug.DrawRay(transform.position, Vector2.right * 5, Color.green);
         //Debug.Log("Player is in range: " + inRange);
         //Debug.Log(inRange);
 
-        if (pKnockBack)
-        {
-            pKnockBackTimer -= 1 * Time.deltaTime;
-            if (pKnockBackTimer <= 0) { pKnockBackTimer = 0; }
-            if (pKnockBackTimer == 0)
-            {
-                pKnockBack = false;
-                pKnockBackTimer = pKnockBackCount;
-            }
-        }
-
         UpdateAttackAnimation();
-    }
-
-    private void FixedUpdate()
-    {
-        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 5, ~ignoreCol);
-        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 5, ~ignoreCol);
-        if (lefthit)
-        {
-            if (lefthit.collider.CompareTag("Enemy"))
-            {
-                lAttackRange = lefthit.point.x - transform.position.x;
-            }
-        }
-        else if (righthit)
-        {
-            if (righthit.collider.CompareTag("Enemy"))
-            {
-                rAttackRange = righthit.point.x - transform.position.x;
-            }
-        }
-        else
-        {
-            lAttackRange = lefthit.point.x - transform.position.x;
-            rAttackRange = righthit.point.x - transform.position.x;
-        }
-
-        if (pKnockBack)
-        {
-            if (playerMove.moveDir.x < 0f)
-            {
-                rb.AddForce(Vector2.right * pKnockBackPower, ForceMode2D.Impulse);
-            }
-            else
-            {
-                rb.AddForce(Vector2.left * pKnockBackPower, ForceMode2D.Impulse);
-            }
-        }
     }
 
     private IEnumerator SwingAnim1()
