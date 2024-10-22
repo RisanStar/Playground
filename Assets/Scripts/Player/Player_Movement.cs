@@ -14,6 +14,7 @@ public class Player_Movement : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator anim;
+    [SerializeField] private Transform[] ledgesPos;
 
     [Header("Scripts")]
     [SerializeField] private Player_RealAttack playerRAttack;
@@ -47,10 +48,12 @@ public class Player_Movement : MonoBehaviour
 
     [Header("Climbing")]
     [SerializeField] private LayerMask wall;
+    [SerializeField] private LayerMask ledge;
     [SerializeField] private Transform wallCheck;
     [SerializeField] private float wallSlideSpeed;
     private bool isSliding;
     private bool canWallJump;
+    private Transform ledgePos;
 
     private enum AnimState {idle, running, jumping}
     private void Awake()
@@ -106,7 +109,7 @@ public class Player_Movement : MonoBehaviour
             }
 
             //WALL JUMP
-            if (Keyboard.current.spaceKey.IsPressed(.4f) && IsWalled())
+            if (Keyboard.current.spaceKey.IsPressed() && IsWalled())
             {
                 canWallJump = true;
                 isSliding = false;
@@ -143,6 +146,19 @@ public class Player_Movement : MonoBehaviour
             }
         }
 
+        float minDist = Mathf.Infinity;
+        foreach (Transform t in ledgesPos)
+        {
+            float dist = Vector2.Distance(t.position, transform.position);
+
+            if (dist < minDist)
+            {
+                ledgePos = t;
+                minDist = dist;
+            }
+        }
+    
+
         //ANIMATION
         UpdateMovementAnimation();
     }
@@ -169,25 +185,25 @@ public class Player_Movement : MonoBehaviour
         //WALL JUMPING PHYS
         if (canWallJump)
         {
-            var rDiagonal = (Vector2.up * Vector2.right).normalized;
-            var lDiagonal = (Vector2.up * Vector2.left).normalized;
-
-            if(moveDir.x < 0f)
-            {
-                rb.AddForce(lDiagonal * jumpForce, ForceMode2D.Impulse);
-            }
+            var rDiagonal = (new Vector2(moveDir.x, 0) * new Vector2((Time.deltaTime * 5), moveDir.y));
+            var lDiagonal = (new Vector2(moveDir.x, 0) * new Vector2((Time.deltaTime * -5), moveDir.y));
 
             if (moveDir.x < 0f)
             {
                 rb.AddForce(rDiagonal * jumpForce, ForceMode2D.Impulse);
             }
+
+            if(moveDir.x > 0f)
+            {
+                rb.AddForce(lDiagonal * jumpForce, ForceMode2D.Impulse);
+            }
         }
 
         //COYOTE & LANDING PHYS
-        if (!IsGrounded())
+        if (!IsGrounded() && !canWallJump)
         {
             coyoteTime -= Time.deltaTime;
-            if (rb.velocity.y > 0f)
+            if (rb.velocity.y > 0f && !IsLedged())
             {
                 coyoteTime = 0f;
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (gravity - 1) * Time.deltaTime;
@@ -215,9 +231,24 @@ public class Player_Movement : MonoBehaviour
         //CLIMBING PHYS
         if (IsWalled())
         {
-            if (isSliding)
+            if (isSliding && !canWallJump)
             {
                 rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlideSpeed, float.MaxValue));
+            }
+        }
+
+        //LEDGE PHYS
+        if (IsLedged())
+        {
+            if (Keyboard.current.spaceKey.IsPressed())
+            {
+                rb.simulated = true;
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            }
+            else
+            {
+                transform.position = ledgePos.position;
+                rb.simulated = false;
             }
         }
     }
@@ -230,6 +261,11 @@ public class Player_Movement : MonoBehaviour
     private bool IsWalled()
     {
         return Physics2D.OverlapCircle(wallCheck.position, .5f, wall);
+    }
+
+    private bool IsLedged()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, .5f, ledge);
     }
 
     private IEnumerator RollAnim()
@@ -283,13 +319,24 @@ public class Player_Movement : MonoBehaviour
                 StopCoroutine(ra);
             }
 
-            if (IsWalled() && rb.velocity.x != 0 )
+            //WALLSLIDE ANIM
+            if (IsWalled() && !IsLedged() && rb.velocity.x != 0 )
             {
                 anim.SetBool("WallSlide", true);
             }
             else
             {
                 anim.SetBool("WallSlide", false);
+            }
+
+            //LEDGEGRAB ANIM
+            if (IsLedged())
+            {
+                anim.SetBool("LedgeGrab", true);
+            }
+            else
+            {
+                anim.SetBool("LedgeGrab", false);
             }
 
 
