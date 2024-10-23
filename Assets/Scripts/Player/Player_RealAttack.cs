@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,10 @@ public class Player_RealAttack : MonoBehaviour
     [SerializeField] private Player_Death playerDeath;
 
     [Header("Attacking")]
+    [SerializeField] private Transform[] enemiesPos;
     [SerializeField] private float pKnockBackPower;
     [SerializeField] private float pKnockBackCount;
+    private Transform enemyPos;
     public bool pKnockBack { get; private set; }
     private float pKnockBackTimer;
 
@@ -25,7 +28,7 @@ public class Player_RealAttack : MonoBehaviour
     {
         pKnockBackTimer = pKnockBackCount;
         pKnockBack = false;
-        attackHB = GetComponent<BoxCollider2D>();
+        attackHB = GetComponentInChildren<BoxCollider2D>();
     }
 
     private void Update()
@@ -39,6 +42,25 @@ public class Player_RealAttack : MonoBehaviour
             {
                 pKnockBack = false;
                 pKnockBackTimer = pKnockBackCount;
+            }
+        }
+
+        Type type = Type.GetType("IgnorePlayerCollision");
+        var comp = GameObject.FindAnyObjectByType(type);
+        if (comp is Component component)
+        {
+            enemiesPos[0] = component.transform;
+        }
+
+        float minEne = Mathf.Infinity;
+        foreach (Transform e in enemiesPos)
+        {
+            float ene = Vector2.Distance(e.position, transform.position);
+
+            if (ene < minEne)
+            {
+                enemyPos = e;
+                minEne = ene;
             }
         }
     }

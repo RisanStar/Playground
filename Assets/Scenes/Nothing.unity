@@ -4911,6 +4911,7 @@ GameObject:
   - component: {fileID: 728634012}
   - component: {fileID: 728634015}
   - component: {fileID: 728634016}
+  - component: {fileID: 728634017}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -5041,7 +5042,7 @@ MonoBehaviour:
   - {fileID: 92219357}
   - {fileID: 1520041282}
   - {fileID: 440685871}
-  playerRAttack: {fileID: 1310568763}
+  playerRAttack: {fileID: 728634017}
   deathScript: {fileID: 728634015}
   speed: 4
   runSpeed: 6
@@ -5183,6 +5184,31 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4
   swingTime: 0.3
+--- !u!114 &728634017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728634010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34960865bc1b7341bffb9f72077b0df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackHB: {fileID: 1310568762}
+  rb: {fileID: 728634014}
+  anim: {fileID: 360653377}
+  playerMove: {fileID: 728634012}
+  playerDeath: {fileID: 728634015}
+  enemiesPos:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  pKnockBackPower: 1
+  pKnockBackCount: 1
 --- !u!1 &746138954
 GameObject:
   m_ObjectHideFlags: 0
@@ -8653,7 +8679,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1310568761}
   - component: {fileID: 1310568762}
-  - component: {fileID: 1310568763}
   m_Layer: 0
   m_Name: AttackHitbox
   m_TagString: Untagged
@@ -8721,25 +8746,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.1, y: 2}
   m_EdgeRadius: 0
---- !u!114 &1310568763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310568760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a34960865bc1b7341bffb9f72077b0df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackHB: {fileID: 1310568762}
-  rb: {fileID: 728634014}
-  anim: {fileID: 360653377}
-  playerMove: {fileID: 728634012}
-  playerDeath: {fileID: 728634015}
-  pKnockBackPower: 1
-  pKnockBackCount: 1
 --- !u!1 &1314938872
 GameObject:
   m_ObjectHideFlags: 0
@@ -13198,7 +13204,7 @@ MonoBehaviour:
   anim: {fileID: 965129795}
   hitbox: {fileID: 1391797194}
   playerHB: {fileID: 57412571}
-  playerRAttack: {fileID: 1310568763}
+  playerRAttack: {fileID: 728634017}
   eHp: 3
 --- !u!114 &1976861049
 MonoBehaviour:
@@ -13239,7 +13245,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 965129797}
   aiPath: {fileID: 1976861041}
   playerMove: {fileID: 728634012}
-  pRAttack: {fileID: 1310568763}
+  pRAttack: {fileID: 728634017}
   banDeath: {fileID: 1976861048}
   banAttack: {fileID: 1976861049}
   ground:
