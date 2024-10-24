@@ -135,14 +135,17 @@ public class Player_Movement : MonoBehaviour
             }
 
             //SPRITE DIRECTION
-            if (moveDir.x < 0f)
+            if (!IsLedged())
             {
-                spriteRenderer.flipX = true;
-            }
+                if (moveDir.x < 0f)
+                {
+                    spriteRenderer.flipX = true;
+                }
 
-            if (moveDir.x > 0f)
-            {
-                spriteRenderer.flipX = false;
+                if (moveDir.x > 0f)
+                {
+                    spriteRenderer.flipX = false;
+                }
             }
         }
 

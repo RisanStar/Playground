@@ -47,9 +47,16 @@ public class Player_RealAttack : MonoBehaviour
 
         Type type = Type.GetType("IgnorePlayerCollision");
         var comp = GameObject.FindAnyObjectByType(type);
+        int i = GameObject.FindObjectsOfType(type).Length;
         if (comp is Component component)
         {
-            enemiesPos[0] = component.transform;
+            Transform[] eAmount = new Transform[i];
+            enemiesPos = eAmount;
+            for (int a = 0; a < eAmount.Length; a++)
+            {
+                enemiesPos[a] = component.transform;
+            }
+
         }
 
         float minEne = Mathf.Infinity;
