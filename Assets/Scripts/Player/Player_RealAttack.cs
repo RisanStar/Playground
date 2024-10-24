@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player_RealAttack : MonoBehaviour
 {
@@ -14,10 +15,14 @@ public class Player_RealAttack : MonoBehaviour
     [SerializeField] private Player_Movement playerMove;
     [SerializeField] private Player_Death playerDeath;
 
+    [Header("Layers")]
+    [SerializeField] private LayerMask ignoreCol;
+
     [Header("Attacking")]
     [SerializeField] private Transform[] enemiesPos;
     [SerializeField] private float pKnockBackPower;
     [SerializeField] private float pKnockBackCount;
+    private bool enemyInRange;
     private Transform enemyPos;
     public bool pKnockBack { get; private set; }
     private float pKnockBackTimer;
@@ -33,7 +38,6 @@ public class Player_RealAttack : MonoBehaviour
 
     private void Update()
     {
-
         if (pKnockBack)
         {
             pKnockBackTimer -= 1 * Time.deltaTime;
@@ -45,7 +49,7 @@ public class Player_RealAttack : MonoBehaviour
             }
         }
 
-        Type type = Type.GetType("IgnorePlayerCollision");
+        Type type = Type.GetType("EnemyTag");
         var comp = GameObject.FindAnyObjectByType(type);
         int i = GameObject.FindObjectsOfType(type).Length;
         if (comp is Component component)
@@ -70,18 +74,14 @@ public class Player_RealAttack : MonoBehaviour
                 minEne = ene;
             }
         }
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<Bandit_Movement>() != null)
+        if (Vector2.Distance(transform.position, enemyPos.transform.position) <= 2f)
         {
-            Debug.Log(collision.GetComponent<Bandit_Movement>());
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack1") || anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2") || anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
-            {
-                pKnockBack = true;
-                eDamage = true;
-            }
+            pKnockBack = true;
+        }
+        else
+        {
+            pKnockBack = false;
         }
     }
 
@@ -93,7 +93,8 @@ public class Player_RealAttack : MonoBehaviour
             {
                 rb.AddForce(Vector2.right * pKnockBackPower, ForceMode2D.Impulse);
             }
-            else
+            
+            if (playerMove.moveDir.x > 0f)
             {
                 rb.AddForce(Vector2.left * pKnockBackPower, ForceMode2D.Impulse);
             }

@@ -3,7 +3,6 @@ using Pathfinding;
 public class Bandit_Movement : MonoBehaviour
 {
     [Header("Assets")]
-    [SerializeField] private Rigidbody2D pRb;
     [SerializeField] private Animator anim;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
@@ -34,27 +33,6 @@ public class Bandit_Movement : MonoBehaviour
     }
     private void Update()
     {
-        //E-RAYCAST
-        //Debug.DrawRay(transform.position, Vector2.left * 5, Color.red);
-        RaycastHit2D lefthit = Physics2D.Raycast(transform.position, Vector2.left, 8, ~ignoreCol);
-        RaycastHit2D righthit = Physics2D.Raycast(transform.position, Vector2.right, 8, ~ignoreCol);
-        if (lefthit)
-        {
-            if (lefthit.collider.CompareTag("Player"))
-            {
-                spriteRenderer.flipX = false;
-            }
-        }
-
-        if (righthit)
-        {
-            if (righthit.collider.CompareTag("Player"))
-            {
-                spriteRenderer.flipX = true;
-            }
-        }
- 
-
         //gravity += Physics.gravity * Time.deltaTime;
 
         //E-KNOCKBACK
@@ -65,6 +43,16 @@ public class Bandit_Movement : MonoBehaviour
         else
         {
             eKnockBack = false;
+        }
+
+        if (aiPath.desiredVelocity.x > 0 && !anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        {
+            spriteRenderer.flipX = true;
+        }
+
+        if (aiPath.desiredVelocity.x < 0 && !anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        {
+            spriteRenderer.flipX = false;
         }
 
         UpdateMovementAnimation();
@@ -104,7 +92,7 @@ public class Bandit_Movement : MonoBehaviour
             }
 
             //RUN & IDLE ANIM
-            if (!aiPath.reachedEndOfPath)
+            if (aiPath.desiredVelocity.x > 0 || aiPath.desiredVelocity.x < 0)
             {
                 state = AnimState.running;
             }

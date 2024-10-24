@@ -29,7 +29,6 @@ public class IgnorePlayerCollision : MonoBehaviour
             else
             {
                 pIFramesCount -= Time.fixedDeltaTime;
-                Debug.Log("The iframes count is:" + pIFramesCount);
             }
 
             if (pIFramesCount <= 0) { pIFramesCount = 0; }
